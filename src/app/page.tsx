@@ -1,86 +1,240 @@
 "use client";
 
-import { useState } from "react";
-import { Search, MapPin, Phone } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { Search, MapPin, Phone, ArrowLeft, Clock, TrendingUp, Star, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import Navbar from "@/components/Navbar";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const suggestions = [
+    { title: "Best Pizza nearby", type: "trending", category: "Food" },
+    { title: "Plumbers in San Francisco", type: "recent", category: "Services" },
+    { title: "Top rated Clinics", type: "trending", category: "Medical" },
+    { title: "Organic Grocery stores", type: "recent", category: "Shopping" },
+    { title: "24/7 Electricians", type: "trending", category: "Emergency" },
+  ];
+
+  const categories = [
+    { name: "Restaurants", icon: "🍕", color: "bg-orange-100" },
+    { name: "Healthcare", icon: "🏥", color: "bg-blue-100" },
+    { name: "Plumbing", icon: "🔧", color: "bg-emerald-100" },
+    { name: "Beauty", icon: "💅", color: "bg-pink-100" },
+  ];
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[var(--background)] flex flex-col items-center justify-center transition-colors duration-300">
-      {/* Hero Section */}
-      <section className="relative w-full flex flex-col items-center justify-center">
-        {/* Decorative background elements using the palette */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl h-full -z-10 opacity-40">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#6FCF97] rounded-full blur-[140px]" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#2FA084] rounded-full blur-[140px]" />
-        </div>
+    <div className="min-h-screen w-full bg-[#EEEEEE] flex flex-col items-center relative overflow-x-hidden transition-colors duration-500">
+      
+      {/* Decorative background elements */}
+      <motion.div 
+        animate={{ 
+          opacity: isSearching ? 0.05 : 0.4,
+          scale: isSearching ? 1.4 : 1 
+        }}
+        transition={{ duration: 0.8 }}
+        className="fixed inset-0 -z-10"
+      >
+        <div className="absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-[#6FCF97] rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#2FA084] rounded-full blur-[120px]" />
+      </motion.div>
 
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          
+      <div className="w-full max-w-5xl px-4 md:px-6 relative flex flex-col flex-1">
+        <Navbar />
+        {/* Search Header Area */}
+        <motion.div 
+          layout
+          transition={{ 
+            layout: { type: "spring", stiffness: 200, damping: 25 },
+            opacity: { duration: 0.2 }
+          }}
+          className={`w-full flex flex-col ${isSearching ? 'pt-16 md:pt-20' : 'pt-20 md:pt-32'}`}
+        >
+          {/* Back button only when searching */}
+          <AnimatePresence>
+            {isSearching && (
+              <motion.button
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                onClick={() => setIsSearching(false)}
+                className="mb-2 flex items-center gap-2 text-[#1F6F5F] font-bold text-sm md:text-base hover:gap-3 transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+                Back to Home
+              </motion.button>
+            )}
+          </AnimatePresence>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-6xl md:text-8xl font-black text-slate-900 mb-6 tracking-tighter"
-          >
-            Find what you need, <br />
-            <span className="text-[#2FA084]">right in your city.</span>
-          </motion.h1>
+          {/* Hero Content */}
+          {!isSearching && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="text-center mb-8 md:mb-12"
+            >
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 mb-4 tracking-tighter leading-[0.9] md:leading-[0.85]">
+                Find what you need, <br />
+                <span className="text-[#2FA084]">right in your city.</span>
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-700 max-w-2xl mx-auto font-medium px-2">
+                Discover over 50,000 verified local businesses, from hidden gems to essential services.
+              </p>
+            </motion.div>
+          )}
 
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xl md:text-2xl text-slate-700 mb-12 max-w-2xl mx-auto font-medium"
-          >
-            Discover over 50,000 verified local businesses, from hidden gems to essential services.
-          </motion.p>
-
-          {/* Search Bar */}
+          {/* Search Bar Container */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="relative max-w-4xl mx-auto w-full"
+            layout
+            className="relative z-50 w-full"
           >
-            <div className="p-3 bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row gap-2 border border-white/50">
-              <div className="flex-[1.5] flex items-center px-6 gap-4">
-                <Search className="text-[#2FA084] w-6 h-6" />
+            <div className={`p-1.5 md:p-3 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-0.5 md:gap-2 border border-slate-200 transition-all duration-500 ${isSearching ? 'rounded-xl' : 'rounded-2xl md:rounded-[2.5rem]'}`}>
+              {/* Query Input */}
+              <div className="flex-[1.5] flex items-center px-4 md:px-6 gap-3 md:gap-4 py-1">
+                <Search className="text-[#2FA084] w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
                 <input 
+                  ref={searchInputRef}
                   type="text" 
-                  placeholder="What are you looking for?" 
-                  className="w-full py-5 bg-transparent outline-none text-slate-900 text-lg placeholder:text-slate-400"
+                  placeholder="Looking for..." 
+                  onFocus={() => setIsSearching(true)}
+                  className="w-full py-3 md:py-5 bg-transparent outline-none text-slate-900 text-base md:text-lg placeholder:text-slate-400 font-medium"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className="hidden md:block w-[1px] h-12 bg-slate-200 self-center" />
-              <div className="flex-1 flex items-center px-6 gap-4">
-                <MapPin className="text-[#6FCF97] w-6 h-6" />
+              
+              {/* Divider for Mobile (visible only on small screens) */}
+              <div className="md:hidden mx-4 h-[1px] bg-slate-100" />
+              
+              {/* Divider for Desktop */}
+              <div className="hidden md:block w-[1px] h-10 bg-slate-200 self-center" />
+              
+              {/* Location Input */}
+              <div className="flex-1 flex items-center px-4 md:px-6 gap-3 md:gap-4 py-1">
+                <MapPin className="text-[#6FCF97] w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
                 <input 
                   type="text" 
                   placeholder="San Francisco, CA" 
-                  className="w-full py-5 bg-transparent outline-none text-slate-900 text-lg placeholder:text-slate-400"
+                  className="w-full py-3 md:py-5 bg-transparent outline-none text-slate-900 text-base md:text-lg placeholder:text-slate-400 font-medium"
                 />
               </div>
-              <button className="bg-[#2FA084] text-white px-10 py-5 rounded-[2rem] font-black text-lg hover:bg-[#1F6F5F] transition-all shadow-lg shadow-emerald-500/30 active:scale-95">
+              
+              <button className="bg-[#2FA084] text-white px-6 md:px-10 py-3.5 md:py-5 rounded-xl md:rounded-[2rem] font-black text-base md:text-lg hover:bg-[#1F6F5F] transition-all shadow-lg active:scale-[0.98] mt-2 md:mt-0">
                 Search
               </button>
             </div>
-            
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
-                <span key={tag} className="px-4 py-2 bg-[#6FCF97]/20 text-[#1F6F5F] rounded-full text-sm font-bold border border-[#6FCF97]/30 cursor-pointer hover:bg-[#6FCF97]/30 transition-colors">
-                  {tag}
-                </span>
-              ))}
-            </div>
           </motion.div>
+        </motion.div>
+
+        {/* Dynamic Content Area */}
+        <div className="flex-1 flex flex-col relative">
+          <AnimatePresence mode="wait">
+            {isSearching ? (
+              <motion.div
+                key="suggestions"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3 }}
+                className="mt-8 flex-1 pb-10"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                  {/* Popular Categories */}
+                  <div className="order-2 md:order-1">
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Popular Categories</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+                      {categories.map((cat) => (
+                        <motion.div
+                          key={cat.name}
+                          whileHover={{ x: 5 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="flex items-center justify-between p-3 md:p-4 bg-white rounded-2xl border border-slate-100 cursor-pointer shadow-sm hover:shadow-md transition-all"
+                        >
+                          <div className="flex items-center gap-2 md:gap-3">
+                            <span className={`w-8 h-8 md:w-10 md:h-10 ${cat.color} rounded-xl flex items-center justify-center text-lg md:text-xl`}>{cat.icon}</span>
+                            <span className="font-bold text-slate-700 text-sm md:text-base">{cat.name}</span>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-slate-300 hidden md:block" />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Suggestions List */}
+                  <div className="md:col-span-2 order-1 md:order-2">
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Quick Suggestions</h3>
+                    <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                      {suggestions.map((item, i) => (
+                        <motion.div
+                          key={i}
+                          whileHover={{ backgroundColor: "#f8fafc" }}
+                          whileTap={{ backgroundColor: "#f1f5f9" }}
+                          className={`flex items-center justify-between p-4 md:p-5 cursor-pointer ${i !== suggestions.length - 1 ? 'border-b border-slate-50' : ''}`}
+                        >
+                          <div className="flex items-center gap-3 md:gap-4">
+                            <div className={`p-2 rounded-lg ${item.type === 'trending' ? 'bg-orange-50 text-orange-500' : 'bg-slate-50 text-slate-400'}`}>
+                              {item.type === 'trending' ? <TrendingUp className="w-4 h-4 md:w-5 md:h-5" /> : <Clock className="w-4 h-4 md:w-5 md:h-5" />}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-900 text-sm md:text-base">{item.title}</p>
+                              <span className="text-[10px] md:text-xs font-bold text-[#2FA084] bg-emerald-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
+                            </div>
+                          </div>
+                          <Star className="w-4 h-4 text-slate-200 hover:text-amber-400 transition-colors" />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Decorative CTA */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-8 md:mt-12 p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] bg-gradient-to-r from-[#2FA084] to-[#1F6F5F] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl"
+                >
+                  <div className="text-center md:text-left">
+                    <h4 className="text-xl md:text-2xl font-black mb-1 md:mb-2">Can't find what you need?</h4>
+                    <p className="text-emerald-50 text-sm md:text-base opacity-90">Our community is always adding new local gems.</p>
+                  </div>
+                  <button className="w-full md:w-auto px-8 py-3.5 md:py-4 bg-white text-[#2FA084] rounded-xl md:rounded-2xl font-black hover:scale-105 transition-all shadow-lg active:scale-95">
+                    Suggest a Place
+                  </button>
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="tags"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-3 px-4"
+              >
+                {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
+                  <motion.span 
+                    key={tag} 
+                    whileHover={{ scale: 1.05, backgroundColor: "#6FCF9744" }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      setSearchQuery(tag);
+                      setIsSearching(true);
+                    }}
+                    className="px-3 md:px-5 py-2 md:py-2.5 bg-[#6FCF97]/20 text-[#1F6F5F] rounded-full text-xs md:text-sm font-bold border border-[#6FCF97]/30 cursor-pointer transition-colors whitespace-nowrap"
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
