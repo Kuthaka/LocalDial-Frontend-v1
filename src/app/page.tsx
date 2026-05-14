@@ -18,16 +18,7 @@ export default function Home() {
         </div>
 
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8 flex justify-center"
-          >
-            <div className="w-16 h-16 bg-[#F48F68] rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/20">
-              <Phone className="text-white w-8 h-8" />
-            </div>
-          </motion.div>
+          
 
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
