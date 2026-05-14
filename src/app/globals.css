@@ -2,20 +2,20 @@
 
 @theme {
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-  --color-primary: #8BDFDD;
-  --color-secondary: #F48F68;
-  --color-accent: #FFE394;
-  --color-background: #FFF6DE;
+  --color-primary: #6FCF97;
+  --color-secondary: #2FA084;
+  --color-accent: #1F6F5F;
+  --color-background: #EEEEEE;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
 }
 
 :root {
-  --background: #FFF6DE;
+  --background: #EEEEEE;
   --foreground: #0f172a;
-  --primary: #8BDFDD;
-  --secondary: #F48F68;
-  --accent: #FFE394;
+  --primary: #6FCF97;
+  --secondary: #2FA084;
+  --accent: #1F6F5F;
   --card: #ffffff;
   --card-foreground: #0f172a;
   --muted: #f1f5f9;
