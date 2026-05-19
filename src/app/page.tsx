@@ -9,6 +9,7 @@ import ReviewDivider from "@/components/ReviewDivider";
 import CategorySection from "@/components/CategorySection";
 import HorizontalPlaceList from "@/components/HorizontalPlaceList";
 import AboutSection from "@/components/AboutSection";
+import Footer from "@/components/Footer";
 
 const nearbyBanks = [
   { id: 1, name: "Chase Bank", rating: 4.5, reviews: 128, address: "123 Market St, San Francisco", distance: "0.2 miles", imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&q=80" },
@@ -270,6 +271,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
