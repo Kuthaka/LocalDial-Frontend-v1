@@ -63,7 +63,7 @@ export default function Home() {
         <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#2FA084] rounded-full blur-[120px]" />
       </motion.div>
 
-      <div className="w-full max-w-5xl px-4 md:px-6 relative flex flex-col flex-1">
+      <div className="w-full max-w-7xl px-4 md:px-6 relative flex flex-col flex-1">
         <Navbar />
         {/* Search Header Area */}
         <motion.div 
@@ -112,7 +112,7 @@ export default function Home() {
           {/* Search Bar Container */}
           <motion.div 
             layout
-            className="relative z-50 w-full"
+            className="relative z-50 w-full max-w-5xl mx-auto"
           >
             <div className={`p-1.5 md:p-3 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-0.5 md:gap-2 border border-slate-200 transition-all duration-500 ${isSearching ? 'rounded-xl' : 'rounded-2xl md:rounded-[2.5rem]'}`}>
               {/* Query Input */}

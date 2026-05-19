@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 
 export default function AboutSection() {
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-6 mb-16">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 mb-16">
       <div className="w-full bg-[#c3f2d1] rounded-[2rem] p-8 md:p-12 flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
         
         {/* Left Content */}

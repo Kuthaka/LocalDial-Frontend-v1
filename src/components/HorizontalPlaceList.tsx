@@ -19,7 +19,7 @@ interface HorizontalPlaceListProps {
 
 export default function HorizontalPlaceList({ title, places }: HorizontalPlaceListProps) {
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-6 mb-12 md:mb-16">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 mb-12 md:mb-16">
       <div className="flex justify-between items-end mb-4 md:mb-6">
         <h2 className="text-xl md:text-2xl font-black text-[#2C3947] tracking-tight">{title}</h2>
         <a href="#" className="text-[#2FA084] text-xs md:text-sm font-bold flex items-center gap-0.5 hover:underline whitespace-nowrap">

@@ -30,7 +30,7 @@ export default function CategorySection() {
         What are you looking for?
       </h2>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 w-full max-w-4xl mx-auto px-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 w-full max-w-6xl mx-auto px-4">
         {categories.map((cat, i) => (
           <div 
             key={i} 

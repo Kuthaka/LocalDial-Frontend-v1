@@ -8,7 +8,7 @@ export default function Footer() {
       {/* Decorative gradient blur */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-[#2FA084] opacity-20 blur-[120px] rounded-full pointer-events-none"></div>
       
-      <div className="w-full max-w-5xl mx-auto px-4 md:px-6 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-16">
           
           {/* Brand & About */}
