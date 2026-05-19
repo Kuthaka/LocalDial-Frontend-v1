@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LocalDial | Find Local Services & Businesses",
-  description: "Discover the best local businesses, services, and hidden gems in your city with LocalDial.",
+  title: "Nearby Direct | Find Local Services & Businesses",
+  description: "Discover the best local businesses, services, and hidden gems in your city with Nearby Direct.",
 };
 
 export default function RootLayout({

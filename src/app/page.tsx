@@ -78,7 +78,7 @@ export default function Home() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="text-center mb-8 md:mb-12"
             >
-              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 mb-4 tracking-tighter leading-[0.9] md:leading-[0.85]">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-[#2C3947] mb-4 tracking-tighter leading-[0.9] md:leading-[0.85]">
                 Find what you need, <br />
                 <span className="text-[#2FA084]">right in your city.</span>
               </h1>
