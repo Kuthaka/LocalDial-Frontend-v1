@@ -6,6 +6,25 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
 import ReviewDivider from "@/components/ReviewDivider";
+import CategorySection from "@/components/CategorySection";
+import HorizontalPlaceList from "@/components/HorizontalPlaceList";
+import AboutSection from "@/components/AboutSection";
+
+const nearbyBanks = [
+  { id: 1, name: "Chase Bank", rating: 4.5, reviews: 128, address: "123 Market St, San Francisco", distance: "0.2 miles", imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&q=80" },
+  { id: 2, name: "Bank of America", rating: 4.2, reviews: 85, address: "456 Montgomery St, San Francisco", distance: "0.4 miles", imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80" },
+  { id: 3, name: "Wells Fargo", rating: 3.9, reviews: 210, address: "789 Mission St, San Francisco", distance: "0.6 miles", imageUrl: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=500&q=80" },
+  { id: 4, name: "Citibank", rating: 4.1, reviews: 94, address: "101 California St, San Francisco", distance: "0.8 miles", imageUrl: "https://images.unsplash.com/photo-1541354329998-f4d9a9f929d4?w=500&q=80" },
+  { id: 5, name: "Capital One Cafe", rating: 4.7, reviews: 320, address: "111 Post St, San Francisco", distance: "0.9 miles", imageUrl: "https://images.unsplash.com/photo-1556740714-a8395b3bf30f?w=500&q=80" }
+];
+
+const nearbyParlours = [
+  { id: 1, name: "Glow Beauty Bar", rating: 4.9, reviews: 342, address: "202 Union St, San Francisco", distance: "0.3 miles", imageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&q=80" },
+  { id: 2, name: "The Glamour Lounge", rating: 4.6, reviews: 156, address: "303 Columbus Ave, San Francisco", distance: "0.5 miles", imageUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=500&q=80" },
+  { id: 3, name: "Lush Salon & Spa", rating: 4.8, reviews: 289, address: "404 Broadway, San Francisco", distance: "0.7 miles", imageUrl: "https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=500&q=80" },
+  { id: 4, name: "Radiance Parlour", rating: 4.4, reviews: 112, address: "505 Kearny St, San Francisco", distance: "1.0 miles", imageUrl: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=500&q=80" },
+  { id: 5, name: "Urban Edge Hair", rating: 4.7, reviews: 201, address: "606 Washington St, San Francisco", distance: "1.2 miles", imageUrl: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=500&q=80" }
+];
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -236,6 +255,16 @@ export default function Home() {
                 
                 {/* Horizontal rule with Review CTA */}
                 <ReviewDivider />
+                
+                {/* Categories Grid */}
+                <CategorySection />
+
+                {/* Horizontal Place Lists */}
+                <HorizontalPlaceList title="Nearby Banks" places={nearbyBanks} />
+                <HorizontalPlaceList title="Nearby Beauty Parlours" places={nearbyParlours} />
+
+                {/* About Application Section */}
+                <AboutSection />
               </motion.div>
             )}
           </AnimatePresence>
