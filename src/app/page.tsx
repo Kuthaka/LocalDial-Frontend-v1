@@ -5,6 +5,7 @@ import { Search, MapPin, Phone, ArrowLeft, Clock, TrendingUp, Star, ChevronRight
 import { motion, AnimatePresence } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
+import ReviewDivider from "@/components/ReviewDivider";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -210,26 +211,31 @@ export default function Home() {
               </motion.div>
             ) : (
               <motion.div
-                key="tags"
+                key="home-content"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-3 px-4"
+                className="w-full flex flex-col items-center"
               >
-                {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
-                  <motion.span 
-                    key={tag} 
-                    whileHover={{ scale: 1.05, backgroundColor: "#6FCF9744" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      setSearchQuery(tag);
-                      setIsSearching(true);
-                    }}
-                    className="px-3 md:px-5 py-2 md:py-2.5 bg-[#6FCF97]/20 text-[#1F6F5F] rounded-full text-xs md:text-sm font-bold border border-[#6FCF97]/30 cursor-pointer transition-colors whitespace-nowrap"
-                  >
-                    {tag}
-                  </motion.span>
-                ))}
+                <div className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-3 px-4">
+                  {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
+                    <motion.span 
+                      key={tag} 
+                      whileHover={{ scale: 1.05, backgroundColor: "#6FCF9744" }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        setSearchQuery(tag);
+                        setIsSearching(true);
+                      }}
+                      className="px-3 md:px-5 py-2 md:py-2.5 bg-[#6FCF97]/20 text-[#1F6F5F] rounded-full text-xs md:text-sm font-bold border border-[#6FCF97]/30 cursor-pointer transition-colors whitespace-nowrap"
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </div>
+                
+                {/* Horizontal rule with Review CTA */}
+                <ReviewDivider />
               </motion.div>
             )}
           </AnimatePresence>
