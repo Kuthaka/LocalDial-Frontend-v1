@@ -6,18 +6,22 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [bgScrolled, setBgScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       // 400px is roughly where the main hero search bar disappears and the second section starts
       setScrolled(window.scrollY > 400); 
+      setBgScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-[60] bg-[#000000]/95 backdrop-blur-md border-b border-white/5">
+    <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
+      bgScrolled ? "bg-[#0a1f18]/95 backdrop-blur-md border-b border-white/5" : "bg-transparent"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center gap-4">
         <div className="flex items-center gap-2 cursor-pointer flex-shrink-0">
           <span className="text-2xl font-light text-white tracking-wide">Nearby Direct</span>
@@ -66,14 +70,11 @@ export default function Navbar() {
               <button className="text-slate-400 hover:text-white transition-colors">AR</button>
             </div>
           </div>
-          <a href="#" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Categories</a>
-          <button className="text-slate-300 hover:text-white transition-colors relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-[#000000]"></span>
+          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md text-sm font-bold text-black hover:bg-slate-100 transition-all shadow-sm">
+            List Your Business <span className="bg-orange-400 text-white text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wide">Free</span>
           </button>
-          <a href="#" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Login</a>
-          <button className="px-5 py-2 bg-white border border-slate-200 rounded-xl text-sm font-black text-black hover:bg-slate-50 transition-all shadow-sm active:scale-95">
-            For businesses
+          <button className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </button>
         </div>
         <button className="md:hidden p-2 flex flex-col gap-1.5">
