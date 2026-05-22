@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -58,6 +58,14 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-6 flex-shrink-0">
+          <div className="flex items-center gap-1.5">
+            <Globe className="w-4 h-4 text-slate-300" />
+            <div className="flex items-center gap-1.5 text-sm font-medium">
+              <button className="text-white">EN</button>
+              <span className="text-slate-600">|</span>
+              <button className="text-slate-400 hover:text-white transition-colors">AR</button>
+            </div>
+          </div>
           <a href="#" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Categories</a>
           <button className="text-slate-300 hover:text-white transition-colors relative">
             <Bell className="w-5 h-5" />

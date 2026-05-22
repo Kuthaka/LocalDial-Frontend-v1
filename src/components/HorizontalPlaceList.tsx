@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChevronRight, Star, MapPin } from "lucide-react";
 
 export interface Place {
@@ -29,9 +30,10 @@ export default function HorizontalPlaceList({ title, places }: HorizontalPlaceLi
       
       <div className="flex overflow-x-auto gap-4 md:gap-5 pb-6 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {places.map((place) => (
-          <div 
+          <Link 
+            href={`/business/${place.id}`}
             key={place.id} 
-            className="snap-start shrink-0 w-[240px] md:w-[280px] flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)] border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+            className="snap-start shrink-0 w-[240px] md:w-[280px] flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)] border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
           >
             <div className="w-full h-32 md:h-40 bg-slate-200 overflow-hidden relative">
               <img 
@@ -56,7 +58,7 @@ export default function HorizontalPlaceList({ title, places }: HorizontalPlaceLi
                 {place.distance}
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
