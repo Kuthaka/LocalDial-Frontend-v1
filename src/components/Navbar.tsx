@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Bell, Search, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -70,12 +71,12 @@ export default function Navbar() {
               <button className="text-slate-400 hover:text-white transition-colors">AR</button>
             </div>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md text-sm font-bold text-black hover:bg-slate-100 transition-all shadow-sm">
+          <Link href="/business/signup" className="flex items-center gap-2 px-4 py-2 bg-white rounded-md text-sm font-bold text-black hover:bg-slate-100 transition-all shadow-sm">
             List Your Business <span className="bg-orange-400 text-white text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wide">Free</span>
-          </button>
-          <button className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+          </Link>
+          <Link href="/business/login" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors title='Login to Business Portal'">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </button>
+          </Link>
         </div>
         <button className="md:hidden p-2 flex flex-col gap-1.5">
           <div className="w-6 h-0.5 bg-white rounded-full"></div>
