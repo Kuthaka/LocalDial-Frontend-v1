@@ -21,7 +21,12 @@ export default async function BusinessDashboard() {
     .eq('id', user.id)
     .single()
 
+  if (profile?.role === 'admin') {
+    redirect('/admin/dashboard')
+  }
+
   if (profile?.role !== 'business' || profile?.status !== 'approved') {
+    await supabase.auth.signOut()
     redirect('/business/login')
   }
 

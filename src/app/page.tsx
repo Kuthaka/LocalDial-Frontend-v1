@@ -80,7 +80,7 @@ export default function Home() {
     <div className="min-h-screen w-full bg-[#f8f9fa] flex flex-col items-center relative overflow-x-hidden transition-colors duration-500 z-0">
       
       {/* Dark hero background matching green theme */}
-      <div className="absolute top-0 left-0 w-full h-[55vh] md:h-[65vh] bg-gradient-to-b from-[#0f2e24] to-[#0a1f18] -z-10 rounded-b-[2rem]" />
+      <div className="absolute top-0 left-0 w-full h-[60vh] md:h-[75vh] bg-gradient-to-b from-[#061510] via-[#0a1f18] to-[#0f2e24] -z-10 rounded-b-[3rem] md:rounded-b-[4rem]" />
 
       <div className="w-full max-w-7xl px-4 md:px-6 relative flex flex-col flex-1">
         <Navbar />
@@ -91,7 +91,7 @@ export default function Home() {
             layout: { type: "spring", stiffness: 200, damping: 25 },
             opacity: { duration: 0.2 }
           }}
-          className={`w-full flex flex-col ${isSearching ? 'pt-16 md:pt-20' : 'pt-20 md:pt-32'}`}
+          className={`w-full flex flex-col ${isSearching ? 'pt-32 md:pt-40' : 'pt-36 md:pt-48'}`}
         >
           {/* Back button only when searching */}
           <AnimatePresence>

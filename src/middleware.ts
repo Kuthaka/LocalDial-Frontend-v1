@@ -27,8 +27,39 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // refreshing the auth token
-  await supabase.auth.getUser()
+  // refreshing the auth token and getting the user
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const url = request.nextUrl.clone()
+  const path = url.pathname
+
+  const isBusinessAuthRoute = path === '/business/login' || path === '/business/signup'
+  const isAdminAuthRoute = path === '/admin/login'
+  const isBusinessProtectedRoute = path.startsWith('/business/dashboard')
+  const isAdminProtectedRoute = path.startsWith('/admin/dashboard')
+
+  // Not logged in -> Trying to access protected routes
+  if (isBusinessProtectedRoute && !user) {
+    url.pathname = '/business/login'
+    return NextResponse.redirect(url)
+  }
+
+  if (isAdminProtectedRoute && !user) {
+    url.pathname = '/admin/login'
+    return NextResponse.redirect(url)
+  }
+
+  // Logged in -> Trying to access login/signup pages
+  if (user) {
+    if (isBusinessAuthRoute) {
+      url.pathname = '/business/dashboard'
+      return NextResponse.redirect(url)
+    }
+    if (isAdminAuthRoute) {
+      url.pathname = '/admin/dashboard'
+      return NextResponse.redirect(url)
+    }
+  }
 
   return supabaseResponse
 }
