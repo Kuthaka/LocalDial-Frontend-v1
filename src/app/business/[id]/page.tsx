@@ -80,14 +80,14 @@ export default function BusinessDetails() {
         <div className="flex items-center gap-4 py-4 md:py-6">
           <button 
             onClick={() => router.back()}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#2FA084] transition-all shadow-sm"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#111844] transition-all shadow-sm"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-            <span className="hover:text-[#2FA084] cursor-pointer">Home</span>
+            <span className="hover:text-[#111844] cursor-pointer">Home</span>
             <ChevronRight className="w-4 h-4" />
-            <span className="hover:text-[#2FA084] cursor-pointer">{business.category}</span>
+            <span className="hover:text-[#111844] cursor-pointer">{business.category}</span>
             <ChevronRight className="w-4 h-4" />
             <span className="text-slate-800 truncate max-w-[150px] sm:max-w-none">{business.name}</span>
           </div>
@@ -123,11 +123,11 @@ export default function BusinessDetails() {
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="bg-emerald-100 text-[#1F6F5F] px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">
+                  <span className="bg-indigo-100 text-[#111844] px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">
                     {business.category}
                   </span>
-                  <span className="flex items-center gap-1 text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="flex items-center gap-1 text-sm font-bold text-[#111844] bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100">
+                    <div className="w-2 h-2 rounded-full bg-[#111844] animate-pulse" />
                     {business.status}
                   </span>
                 </div>
@@ -146,7 +146,7 @@ export default function BusinessDetails() {
               </div>
               
               <div className="flex gap-2 self-start">
-                <button className="flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#2FA084] transition-all shadow-sm">
+                <button className="flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#111844] transition-all shadow-sm">
                   <Share2 className="w-5 h-5" />
                 </button>
                 <button 
@@ -163,7 +163,7 @@ export default function BusinessDetails() {
             {/* About Section */}
             <section className="mb-10">
               <h2 className="text-2xl font-black text-slate-800 mb-4 flex items-center gap-2">
-                <Info className="w-6 h-6 text-[#2FA084]" />
+                <Info className="w-6 h-6 text-[#111844]" />
                 About Business
               </h2>
               <p className="text-slate-600 text-base md:text-lg leading-relaxed font-medium">
@@ -177,7 +177,7 @@ export default function BusinessDetails() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {business.features.map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                    <CheckCircle2 className="w-5 h-5 text-[#2FA084]" />
+                    <CheckCircle2 className="w-5 h-5 text-[#111844]" />
                     <span className="font-bold text-slate-700 text-sm">{feature}</span>
                   </div>
                 ))}
@@ -190,10 +190,10 @@ export default function BusinessDetails() {
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-                  <MessageSquare className="w-6 h-6 text-[#2FA084]" />
+                  <MessageSquare className="w-6 h-6 text-[#111844]" />
                   Customer Reviews
                 </h2>
-                <button className="text-[#2FA084] font-bold text-sm hover:underline">Write a Review</button>
+                <button className="text-[#111844] font-bold text-sm hover:underline">Write a Review</button>
               </div>
               
               <div className="space-y-6">
@@ -228,18 +228,18 @@ export default function BusinessDetails() {
               
               {/* Action Card */}
               <div className="bg-white rounded-[2rem] p-6 shadow-xl border border-slate-100">
-                <button className="w-full bg-[#2FA084] hover:bg-[#1F6F5F] text-white py-4 rounded-xl font-black text-lg mb-3 shadow-lg shadow-[#2FA084]/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                <button className="w-full bg-[#111844] hover:bg-[#111844] text-white py-4 rounded-xl font-black text-lg mb-3 shadow-lg shadow-[#111844]/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                   <Phone className="w-5 h-5" />
                   Call Now
                 </button>
-                <button className="w-full bg-emerald-50 hover:bg-emerald-100 text-[#1F6F5F] py-4 rounded-xl font-bold text-lg mb-6 transition-all flex items-center justify-center gap-2 border border-emerald-100">
+                <button className="w-full bg-indigo-50 hover:bg-indigo-100 text-[#111844] py-4 rounded-xl font-bold text-lg mb-6 transition-all flex items-center justify-center gap-2 border border-indigo-100">
                   <MapPin className="w-5 h-5" />
                   Get Directions
                 </button>
 
                 <div className="space-y-5">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-[#2FA084]">
+                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-[#111844]">
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
@@ -249,7 +249,7 @@ export default function BusinessDetails() {
                   </div>
                   
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-[#2FA084]">
+                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-[#111844]">
                       <Phone className="w-5 h-5" />
                     </div>
                     <div>
@@ -259,12 +259,12 @@ export default function BusinessDetails() {
                   </div>
                   
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-[#2FA084]">
+                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-[#111844]">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Website</p>
-                      <a href={`https://${business.website}`} target="_blank" rel="noreferrer" className="font-bold text-[#2FA084] hover:underline">
+                      <a href={`https://${business.website}`} target="_blank" rel="noreferrer" className="font-bold text-[#111844] hover:underline">
                         {business.website}
                       </a>
                     </div>
@@ -285,11 +285,11 @@ export default function BusinessDetails() {
                   {business.workingHours.map((schedule, idx) => {
                     const isToday = schedule.day === "Wednesday"; // Mock current day
                     return (
-                      <div key={idx} className={`flex justify-between items-center p-2 rounded-lg ${isToday ? 'bg-emerald-50 border border-emerald-100' : ''}`}>
-                        <span className={`font-medium ${isToday ? 'text-emerald-700 font-bold' : 'text-slate-600'}`}>
-                          {schedule.day} {isToday && <span className="ml-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded uppercase">Today</span>}
+                      <div key={idx} className={`flex justify-between items-center p-2 rounded-lg ${isToday ? 'bg-indigo-50 border border-indigo-100' : ''}`}>
+                        <span className={`font-medium ${isToday ? 'text-[#111844] font-bold' : 'text-slate-600'}`}>
+                          {schedule.day} {isToday && <span className="ml-1 text-[10px] bg-[#111844] text-white px-1.5 py-0.5 rounded uppercase">Today</span>}
                         </span>
-                        <span className={`font-bold ${schedule.hours === 'Closed' ? 'text-red-500' : (isToday ? 'text-emerald-700' : 'text-slate-800')}`}>
+                        <span className={`font-bold ${schedule.hours === 'Closed' ? 'text-red-500' : (isToday ? 'text-[#111844]' : 'text-slate-800')}`}>
                           {schedule.hours}
                         </span>
                       </div>

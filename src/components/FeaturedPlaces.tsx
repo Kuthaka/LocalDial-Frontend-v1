@@ -44,7 +44,7 @@ export default function FeaturedPlaces({ title, subtitle, places, theme = 'dark'
               
               {/* Card Header */}
               <div className={`flex items-center gap-4 p-5 border-b ${isDark ? 'border-[#1b4335]' : 'border-slate-100'}`}>
-                <img src={place.imageUrl} alt={place.name} className={`w-12 h-12 rounded-lg object-cover border ${isDark ? 'border-[#2FA084]' : 'border-slate-200'}`} />
+                <img src={place.imageUrl} alt={place.name} className={`w-12 h-12 rounded-lg object-cover border ${isDark ? 'border-[#111844]' : 'border-slate-200'}`} />
                 <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{place.name}</h3>
               </div>
 
@@ -57,11 +57,11 @@ export default function FeaturedPlaces({ title, subtitle, places, theme = 'dark'
                     className={`flex items-center justify-between py-3 px-5 border-b text-sm transition-colors group ${
                       isDark 
                         ? 'border-[#1b4335] text-slate-300 hover:text-white hover:bg-[#15382d]' 
-                        : 'border-slate-100 text-slate-600 hover:text-[#2FA084] hover:bg-slate-50'
+                        : 'border-slate-100 text-slate-600 hover:text-[#111844] hover:bg-slate-50'
                     }`}
                   >
                     <span className="truncate pr-4">{feature}</span>
-                    <ChevronRight className={`w-4 h-4 ${isDark ? 'text-slate-500 group-hover:text-[#2FA084]' : 'text-slate-400 group-hover:text-[#2FA084]'}`} />
+                    <ChevronRight className={`w-4 h-4 ${isDark ? 'text-slate-500 group-hover:text-[#111844]' : 'text-slate-400 group-hover:text-[#111844]'}`} />
                   </a>
                 ))}
               </div>
@@ -86,7 +86,7 @@ export default function FeaturedPlaces({ title, subtitle, places, theme = 'dark'
                 <button className={`bg-transparent border font-bold text-sm px-6 py-2 rounded transition-colors w-full md:w-auto ${
                   isDark 
                     ? 'border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white' 
-                    : 'border-[#2FA084] text-[#2FA084] hover:bg-[#2FA084] hover:text-white'
+                    : 'border-[#111844] text-[#111844] hover:bg-[#111844] hover:text-white'
                 }`}>
                   Enquire Now
                 </button>

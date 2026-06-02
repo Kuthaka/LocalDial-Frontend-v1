@@ -38,7 +38,7 @@ export default function DiscoverCities() {
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
               />
             </div>
-            <span className="text-sm md:text-base font-bold text-slate-700 group-hover:text-[#2FA084] transition-colors">{city.name}</span>
+            <span className="text-sm md:text-base font-bold text-slate-700 group-hover:text-[#111844] transition-colors">{city.name}</span>
           </motion.div>
         ))}
       </div>

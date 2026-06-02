@@ -70,7 +70,7 @@ export default function OverseasEducation() {
               
               {/* Card Header */}
               <div className="flex items-center gap-4 p-5 border-b border-[#1b4335]">
-                <img src={dest.image} alt={dest.country} className="w-12 h-12 rounded-lg object-cover border border-[#2FA084]" />
+                <img src={dest.image} alt={dest.country} className="w-12 h-12 rounded-lg object-cover border border-[#111844]" />
                 <h3 className="text-lg font-bold text-white">{dest.title}</h3>
               </div>
 
@@ -83,7 +83,7 @@ export default function OverseasEducation() {
                     className="flex items-center justify-between py-3 px-5 border-b border-[#1b4335] text-sm text-slate-300 hover:text-white hover:bg-[#15382d] transition-colors group"
                   >
                     <span className="truncate pr-4">{link}</span>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#2FA084]" />
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#111844]" />
                   </a>
                 ))}
               </div>

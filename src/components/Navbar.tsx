@@ -19,10 +19,10 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
-      bgScrolled ? "bg-[#0a1f18]/95 backdrop-blur-md border-b border-white/5 shadow-lg" : "bg-[#0a1f18] md:bg-transparent"
+      bgScrolled ? "bg-[#4B5694]/95 backdrop-blur-md border-b border-white/5 shadow-lg" : "bg-[#4B5694] md:bg-transparent"
     }`}>
       {/* 1. Top Bar (Thin) - Both Desktop & Mobile */}
-      <div className="bg-[#061510] border-b border-white/10 text-slate-300 text-[10px] md:text-xs">
+      <div className="bg-[#4B5694] border-b border-white/10 text-slate-300 text-[10px] md:text-xs">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-1.5 flex justify-between items-center">
           <div className="flex items-center gap-3 md:gap-6">
             <a href="tel:+441642343343" className="flex items-center gap-1.5 hover:text-white transition-colors">
@@ -31,8 +31,8 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-1.5">
               <MapPin size={12} /> Discover Local Businesses
             </div>
-            <div className="hidden md:flex items-center gap-1.5 text-emerald-400">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div> New deals added today
+            <div className="hidden md:flex items-center gap-1.5 text-[#7288AE]">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#7288AE] animate-pulse"></div> New deals added today
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -92,7 +92,7 @@ export default function Navbar() {
       </div>
 
       {/* 3. Bottom Bar (Thin) - Desktop Only */}
-      <div className="hidden lg:block bg-[#081a14]/80 border-t border-white/10 backdrop-blur-md">
+      <div className="hidden lg:block bg-[#4B5694]/80 border-t border-white/10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center text-xs font-medium text-slate-300">
           <div className="flex items-center gap-6">
             <Link href="#" className="flex items-center gap-1.5 hover:text-white transition-colors"><HelpCircle size={14} /> Help & guides</Link>
@@ -102,7 +102,7 @@ export default function Navbar() {
             <Link href="#" className="flex items-center gap-1.5 hover:text-white transition-colors"><Mail size={14} /> Contact</Link>
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-emerald-400 font-medium">
+            <div className="flex items-center gap-2 text-[#7288AE] font-medium">
               <Globe size={14} /> FREE BUSINESS LISTING
             </div>
             <Link href="/business/signup" className="flex items-center gap-1.5 text-white hover:text-orange-400 transition-colors uppercase tracking-wider font-bold border-l border-white/10 pl-6">

@@ -2,9 +2,9 @@
 
 @theme {
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-  --color-primary: #6FCF97;
-  --color-secondary: #2FA084;
-  --color-accent: #1F6F5F;
+  --color-primary: #111844;
+  --color-secondary: #111844;
+  --color-accent: #111844;
   --color-background: #EEEEEE;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
@@ -13,9 +13,9 @@
 :root {
   --background: #EEEEEE;
   --foreground: #0f172a;
-  --primary: #6FCF97;
-  --secondary: #2FA084;
-  --accent: #1F6F5F;
+  --primary: #111844;
+  --secondary: #111844;
+  --accent: #111844;
   --card: #ffffff;
   --card-foreground: #0f172a;
   --muted: #f1f5f9;

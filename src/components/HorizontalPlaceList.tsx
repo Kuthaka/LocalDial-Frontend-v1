@@ -28,7 +28,7 @@ export default function HorizontalPlaceList({ title, places, theme = 'light' }: 
         <h2 className={`text-xl md:text-2xl font-black tracking-tight ${isDark ? 'text-white' : 'text-[#2C3947]'}`}>
           {title}
         </h2>
-        <a href="#" className={`text-xs md:text-sm font-bold flex items-center gap-0.5 hover:underline whitespace-nowrap ${isDark ? 'text-orange-400' : 'text-[#2FA084]'}`}>
+        <a href="#" className={`text-xs md:text-sm font-bold flex items-center gap-0.5 hover:underline whitespace-nowrap ${isDark ? 'text-orange-400' : 'text-[#111844]'}`}>
           See more <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
         </a>
       </div>
@@ -70,7 +70,7 @@ export default function HorizontalPlaceList({ title, places, theme = 'light' }: 
               <div className={`text-xs font-bold mt-3 w-fit px-2.5 py-1 rounded-md border ${
                 isDark 
                   ? 'text-orange-400 bg-orange-400/10 border-orange-400/20' 
-                  : 'text-[#2FA084] bg-emerald-50 border-emerald-100'
+                  : 'text-[#111844] bg-indigo-50 border-indigo-100'
               }`}>
                 {place.distance}
               </div>

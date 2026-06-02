@@ -44,7 +44,7 @@ export default function Home() {
   const categories = [
     { name: "Restaurants", icon: "🍕", color: "bg-orange-100" },
     { name: "Healthcare", icon: "🏥", color: "bg-blue-100" },
-    { name: "Plumbing", icon: "🔧", color: "bg-emerald-100" },
+    { name: "Plumbing", icon: "🔧", color: "bg-indigo-100" },
     { name: "Beauty", icon: "💅", color: "bg-pink-100" },
   ];
 
@@ -79,8 +79,8 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-[#f8f9fa] flex flex-col items-center relative overflow-x-hidden transition-colors duration-500 z-0">
       
-      {/* Dark hero background matching green theme */}
-      <div className="absolute top-0 left-0 w-full h-[60vh] md:h-[75vh] bg-gradient-to-b from-[#061510] via-[#0a1f18] to-[#0f2e24] -z-10 rounded-b-[3rem] md:rounded-b-[4rem]" />
+      {/* Dark hero background matching blue theme */}
+      <div className="absolute top-0 left-0 w-full h-[60vh] md:h-[75vh] bg-[#111844] -z-10 rounded-b-[3rem] md:rounded-b-[4rem]" />
 
       <div className="w-full max-w-7xl px-4 md:px-6 relative flex flex-col flex-1">
         <Navbar />
@@ -101,7 +101,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 onClick={() => setIsSearching(false)}
-                className="mb-2 flex items-center gap-2 text-[#1F6F5F] font-bold text-sm md:text-base hover:gap-3 transition-all"
+                className="mb-2 flex items-center gap-2 text-[#111844] font-bold text-sm md:text-base hover:gap-3 transition-all"
               >
                 <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
                 Back to Home
@@ -220,7 +220,7 @@ export default function Home() {
                             </div>
                             <div>
                               <p className="font-bold text-slate-900 text-sm md:text-base">{item.title}</p>
-                              <span className="text-[10px] md:text-xs font-bold text-[#2FA084] bg-emerald-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
+                              <span className="text-[10px] md:text-xs font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
                             </div>
                           </div>
                           <Star className="w-4 h-4 text-slate-200 hover:text-amber-400 transition-colors" />
@@ -235,13 +235,13 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="mt-8 md:mt-12 p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] bg-gradient-to-r from-[#2FA084] to-[#1F6F5F] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl"
+                  className="mt-8 md:mt-12 p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] bg-[#111844] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl"
                 >
                   <div className="text-center md:text-left">
                     <h4 className="text-xl md:text-2xl font-black mb-1 md:mb-2">Can't find what you need?</h4>
-                    <p className="text-emerald-50 text-sm md:text-base opacity-90">Our community is always adding new local gems.</p>
+                    <p className="text-blue-100 text-sm md:text-base opacity-90">Our community is always adding new local gems.</p>
                   </div>
-                  <button className="w-full md:w-auto px-8 py-3.5 md:py-4 bg-white text-[#2FA084] rounded-xl md:rounded-2xl font-black hover:scale-105 transition-all shadow-lg active:scale-95">
+                  <button className="w-full md:w-auto px-8 py-3.5 md:py-4 bg-white text-[#111844] rounded-xl md:rounded-2xl font-black hover:scale-105 transition-all shadow-lg active:scale-95">
                     Suggest a Place
                   </button>
                 </motion.div>
@@ -258,13 +258,13 @@ export default function Home() {
                   {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
                     <motion.span 
                       key={tag} 
-                      whileHover={{ scale: 1.05, backgroundColor: "#6FCF9744" }}
+                      whileHover={{ scale: 1.05, backgroundColor: "#11184411" }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => {
                         setSearchQuery(tag);
                         setIsSearching(true);
                       }}
-                      className="px-3 md:px-5 py-2 md:py-2.5 bg-[#6FCF97]/20 text-[#1F6F5F] rounded-full text-xs md:text-sm font-bold border border-[#6FCF97]/30 cursor-pointer transition-colors whitespace-nowrap"
+                      className="px-3 md:px-5 py-2 md:py-2.5 bg-[#111844]/10 text-[#111844] rounded-full text-xs md:text-sm font-bold border border-[#111844]/20 cursor-pointer transition-colors whitespace-nowrap"
                     >
                       {tag}
                     </motion.span>
@@ -288,7 +288,7 @@ export default function Home() {
                           </div>
                         ))}
                       </div>
-                      <div className="text-center"><button className="text-[#1F6F5F] font-bold text-sm hover:underline">View all</button></div>
+                      <div className="text-center"><button className="text-[#111844] font-bold text-sm hover:underline">View all</button></div>
                     </div>
                     
                     {/* Education Card */}
@@ -302,7 +302,7 @@ export default function Home() {
                           </div>
                         ))}
                       </div>
-                      <div className="text-center"><button className="text-[#1F6F5F] font-bold text-sm hover:underline">View all</button></div>
+                      <div className="text-center"><button className="text-[#111844] font-bold text-sm hover:underline">View all</button></div>
                     </div>
 
                     {/* Services Card */}
@@ -316,7 +316,7 @@ export default function Home() {
                           </div>
                         ))}
                       </div>
-                      <div className="text-center"><button className="text-[#1F6F5F] font-bold text-sm hover:underline">View all</button></div>
+                      <div className="text-center"><button className="text-[#111844] font-bold text-sm hover:underline">View all</button></div>
                     </div>
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export default function Home() {
                 
                 {/* Dark Section Grouping (Featured Places) */}
                 <div className="w-full relative mt-8 py-4">
-                   <div className="absolute inset-0 bg-[#0a1f18] -ml-[50vw] -mr-[50vw] left-1/2 w-[100vw]"></div>
+                   <div className="absolute inset-0 bg-[#0a0e29] -ml-[50vw] -mr-[50vw] left-1/2 w-[100vw]"></div>
                    
                    <div className="relative z-10 w-full flex flex-col gap-4">
                      <FeaturedPlaces 

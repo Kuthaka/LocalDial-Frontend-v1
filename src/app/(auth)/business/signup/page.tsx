@@ -33,12 +33,12 @@ export default function BusinessSignup() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center"
         >
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-emerald-600" />
+          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-8 h-8 text-[#111844]" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-4">Application Received!</h2>
           <p className="text-slate-600 mb-8">{success}</p>
-          <Link href="/" className="inline-flex items-center justify-center gap-2 bg-emerald-900 text-white px-6 py-3 rounded-lg hover:bg-emerald-800 transition-colors">
+          <Link href="/" className="inline-flex items-center justify-center gap-2 bg-[#111844] text-white px-6 py-3 rounded-lg hover:bg-[#111844]/90 transition-colors">
             Return to Homepage
           </Link>
         </motion.div>
@@ -53,10 +53,10 @@ export default function BusinessSignup() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden"
       >
-        <div className="bg-emerald-900 p-8 text-white text-center">
-          <Store className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+        <div className="bg-[#111844] p-8 text-white text-center">
+          <Store className="w-12 h-12 mx-auto mb-4 text-indigo-300" />
           <h1 className="text-2xl font-bold mb-2">Partner with Us</h1>
-          <p className="text-emerald-100/80">List your business on LocalDial</p>
+          <p className="text-indigo-100/80">List your business on LocalDial</p>
         </div>
 
         <div className="p-8">
@@ -75,7 +75,7 @@ export default function BusinessSignup() {
                   name="businessName"
                   type="text"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="e.g. The Green Cafe"
                 />
               </div>
@@ -89,7 +89,7 @@ export default function BusinessSignup() {
                   name="email"
                   type="email"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="contact@thegreencafe.com"
                 />
               </div>
@@ -104,7 +104,7 @@ export default function BusinessSignup() {
                   type="password"
                   required
                   minLength={6}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="Create a strong password"
                 />
               </div>
@@ -114,7 +114,7 @@ export default function BusinessSignup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-emerald-900 hover:bg-emerald-800 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 group mt-6 disabled:opacity-70"
+              className="w-full bg-[#111844] hover:bg-[#111844]/90 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 group mt-6 disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -129,7 +129,7 @@ export default function BusinessSignup() {
 
           <p className="mt-8 text-center text-sm text-slate-600">
             Already registered?{' '}
-            <Link href="/business/login" className="text-emerald-700 font-semibold hover:underline">
+            <Link href="/business/login" className="text-[#111844] font-semibold hover:underline">
               Sign in
             </Link>
           </p>

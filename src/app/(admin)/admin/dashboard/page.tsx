@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
       <header className="bg-slate-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6 text-emerald-500" />
+            <Shield className="w-6 h-6 text-[#111844]" />
             <h1 className="text-xl font-bold">Master Admin</h1>
           </div>
           <form action={logout}>
@@ -93,7 +93,7 @@ export default async function AdminDashboard() {
                           'use server'
                           await approveBusiness(business.id)
                         }} className="flex-1 sm:flex-none">
-                          <button className="w-full flex items-center justify-center gap-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                          <button className="w-full flex items-center justify-center gap-1 bg-indigo-100 hover:bg-indigo-200 text-[#111844] px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                             <Check className="w-4 h-4" />
                             Approve
                           </button>
@@ -139,7 +139,7 @@ export default async function AdminDashboard() {
                       </div>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         business.status === 'approved' 
-                          ? 'bg-emerald-100 text-emerald-800' 
+                          ? 'bg-indigo-100 text-[#111844]/90' 
                           : 'bg-red-100 text-red-800'
                       }`}>
                         {business.status}

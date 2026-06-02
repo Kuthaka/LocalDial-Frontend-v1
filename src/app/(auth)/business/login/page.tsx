@@ -27,10 +27,10 @@ export default function BusinessLogin() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden"
       >
-        <div className="bg-emerald-900 p-8 text-white text-center">
-          <Building2 className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+        <div className="bg-[#111844] p-8 text-white text-center">
+          <Building2 className="w-12 h-12 mx-auto mb-4 text-indigo-300" />
           <h1 className="text-2xl font-bold mb-2">Business Portal</h1>
-          <p className="text-emerald-100/80">Manage your LocalDial presence</p>
+          <p className="text-indigo-100/80">Manage your LocalDial presence</p>
         </div>
 
         <div className="p-8">
@@ -49,7 +49,7 @@ export default function BusinessLogin() {
                   name="email"
                   type="email"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="hello@yourbusiness.com"
                 />
               </div>
@@ -63,7 +63,7 @@ export default function BusinessLogin() {
                   name="password"
                   type="password"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -72,7 +72,7 @@ export default function BusinessLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-emerald-900 hover:bg-emerald-800 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
+              className="w-full bg-[#111844] hover:bg-[#111844]/90 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -87,7 +87,7 @@ export default function BusinessLogin() {
 
           <p className="mt-8 text-center text-sm text-slate-600">
             Don't have a business account?{' '}
-            <Link href="/business/signup" className="text-emerald-700 font-semibold hover:underline">
+            <Link href="/business/signup" className="text-[#111844] font-semibold hover:underline">
               Register now
             </Link>
           </p>

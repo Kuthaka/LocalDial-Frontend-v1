@@ -27,7 +27,7 @@ export default function AdminLogin() {
         className="max-w-md w-full bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700"
       >
         <div className="bg-slate-950 p-8 text-white text-center border-b border-slate-800">
-          <ShieldCheck className="w-12 h-12 mx-auto mb-4 text-emerald-500" />
+          <ShieldCheck className="w-12 h-12 mx-auto mb-4 text-[#111844]" />
           <h1 className="text-2xl font-bold mb-2">Master Admin</h1>
           <p className="text-slate-400">System Administration Access</p>
         </div>
@@ -48,7 +48,7 @@ export default function AdminLogin() {
                   name="email"
                   type="email"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="admin@localdial.com"
                 />
               </div>
@@ -62,7 +62,7 @@ export default function AdminLogin() {
                   name="password"
                   type="password"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -71,7 +71,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-70 mt-4"
+              className="w-full bg-[#111844] hover:bg-[#111844] text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-70 mt-4"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

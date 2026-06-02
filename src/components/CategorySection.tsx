@@ -36,7 +36,7 @@ export default function CategorySection() {
             key={i} 
             className="flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer group"
           >
-            <div className="w-12 h-12 bg-slate-50 text-[#2FA084] rounded-full flex items-center justify-center group-hover:bg-[#2FA084] group-hover:text-white transition-colors">
+            <div className="w-12 h-12 bg-slate-50 text-[#111844] rounded-full flex items-center justify-center group-hover:bg-[#111844] group-hover:text-white transition-colors">
               <cat.icon className="w-5 h-5 md:w-6 md:h-6" />
             </div>
             <span className="font-bold text-slate-700 text-sm md:text-base text-center">{cat.name}</span>
