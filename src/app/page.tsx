@@ -14,6 +14,8 @@ import LocationModal from "@/components/LocationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
+import QuickCategories from "@/components/QuickCategories";
+
 const nearbyBanks = [
   { id: 1, name: "Chase Bank", rating: 4.5, reviews: 128, address: "123 Market St, San Francisco", distance: "0.2 miles", imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&q=80" },
   { id: 2, name: "Bank of America", rating: 4.2, reviews: 85, address: "456 Montgomery St, San Francisco", distance: "0.4 miles", imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80" },
@@ -279,6 +281,8 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 className="w-full flex flex-col items-center"
               >
+                <QuickCategories />
+                
                 {/* Overlapping Categories Grid */}
                 <div className="w-full max-w-7xl mx-auto mt-4 md:mt-8 mb-16 relative z-10 px-4 md:px-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
