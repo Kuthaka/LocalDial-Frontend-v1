@@ -4,15 +4,8 @@ interface LocationState {
   currentLocation: string;
 }
 
-const getInitialLocation = (): string => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('userLocation') || '';
-  }
-  return '';
-};
-
 const initialState: LocationState = {
-  currentLocation: getInitialLocation(),
+  currentLocation: '',
 };
 
 const locationSlice = createSlice({
