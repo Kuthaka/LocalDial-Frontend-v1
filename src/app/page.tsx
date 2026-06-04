@@ -209,7 +209,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                   {/* Popular Categories */}
                   <div className="order-2 md:order-1">
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Popular Categories</h3>
+                    <h3 className="text-xs font-black text-black uppercase tracking-widest mb-4">Popular Categories</h3>
                     <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
                       {categories.map((cat) => (
                         <motion.div
@@ -230,22 +230,22 @@ export default function Home() {
 
                   {/* Suggestions List */}
                   <div className="md:col-span-2 order-1 md:order-2">
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Quick Suggestions</h3>
+                    <h3 className="text-xs font-black text-black uppercase tracking-widest mb-4">Quick Suggestions</h3>
                     <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                      {suggestions.map((item, i) => (
+                      {suggestions.slice(0, 4).map((item, i) => (
                         <motion.div
                           key={i}
                           whileHover={{ backgroundColor: "#f8fafc" }}
                           whileTap={{ backgroundColor: "#f1f5f9" }}
-                          className={`flex items-center justify-between p-4 md:p-5 cursor-pointer ${i !== suggestions.length - 1 ? 'border-b border-slate-50' : ''}`}
+                          className={`flex items-center justify-between p-3 md:p-4 cursor-pointer ${i !== 3 ? 'border-b border-slate-50' : ''}`}
                         >
                           <div className="flex items-center gap-3 md:gap-4">
                             <div className={`p-2 rounded-lg ${item.type === 'trending' ? 'bg-orange-50 text-orange-500' : 'bg-slate-50 text-slate-400'}`}>
-                              {item.type === 'trending' ? <TrendingUp className="w-4 h-4 md:w-5 md:h-5" /> : <Clock className="w-4 h-4 md:w-5 md:h-5" />}
+                              {item.type === 'trending' ? <TrendingUp className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                             </div>
                             <div>
-                              <p className="font-bold text-slate-900 text-sm md:text-base">{item.title}</p>
-                              <span className="text-[10px] md:text-xs font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
+                              <p className="font-bold text-slate-900 text-sm md:text-[15px]">{item.title}</p>
+                              <span className="text-[10px] font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
                             </div>
                           </div>
                           <Star className="w-4 h-4 text-slate-200 hover:text-amber-400 transition-colors" />
