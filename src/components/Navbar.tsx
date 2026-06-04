@@ -54,7 +54,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 cursor-pointer flex-shrink-0">
-          <span className="text-2xl font-black text-white tracking-wide">NearbyDirect</span>
+          <span className="text-2xl font-black text-black tracking-wide">NearbyDirect</span>
         </Link>
 
 
@@ -63,32 +63,32 @@ export default function Navbar() {
         <div className="flex items-center gap-4 lg:gap-5 flex-shrink-0 ml-auto">
           {/* List Your Business CTA */}
           <div className="relative hidden sm:block mr-2 mt-1">
-            <Link href="/business/signup" className="bg-white text-[#111844] font-bold px-4 py-2 rounded-lg text-sm hover:bg-slate-100 transition-colors shadow-sm">
+            <Link href="/business/signup" className="bg-[#F4AE52] text-slate-900 font-bold px-4 py-2 rounded-full text-sm hover:bg-[#e09c40] transition-colors shadow-sm">
               List Your Business
             </Link>
-            <div className="absolute -top-3 -right-2 bg-green-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-md transform rotate-[10deg] border border-[#4B5694]">
+            <div className="absolute -top-3 -right-2 bg-green-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-md transform rotate-[10deg] border border-white">
               FREE
             </div>
           </div>
           {/* Search Input */}
-          <div className="hidden md:flex items-center bg-white/10 border border-white/20 rounded-full px-3 py-1.5 w-64 xl:w-80 hover:bg-white/15 transition-colors focus-within:bg-white/15 focus-within:border-white/30">
-            <Search className="w-4 h-4 text-slate-300 mr-2 flex-shrink-0" />
+          <div className="hidden md:flex items-center bg-white border-2 border-slate-300 rounded-full px-3 py-1.5 w-64 xl:w-80 hover:border-slate-400 transition-colors focus-within:bg-white focus-within:border-[#F4AE52] shadow-sm">
+            <Search className="w-4 h-4 text-slate-600 mr-2 flex-shrink-0" />
             <input 
               type="text" 
               placeholder="SERVICE OR PLACE NAME" 
-              className="w-full bg-transparent border-none outline-none text-white placeholder:text-slate-400 text-xs font-medium uppercase" 
+              className="w-full bg-transparent border-none outline-none text-black placeholder:text-slate-500 text-xs font-bold uppercase" 
             />
-            <div className="text-[10px] border border-white/20 px-1.5 py-0.5 rounded text-slate-400 ml-2 whitespace-nowrap bg-black/20 font-mono">Ctrl+K</div>
+            <div className="text-[10px] border border-slate-300 px-1.5 py-0.5 rounded text-slate-600 ml-2 whitespace-nowrap bg-slate-50 font-mono">Ctrl+K</div>
           </div>
           
-          <Search className="md:hidden w-5 h-5 text-slate-300 hover:text-white cursor-pointer transition-colors" />
+          <Search className="md:hidden w-5 h-5 text-black hover:text-[#F4AE52] cursor-pointer transition-colors" />
           
-          <Link href="/business/login" className="text-slate-300 hover:text-white transition-colors" title="Login">
-            <User className="w-5 h-5" />
+          <Link href="/business/login" className="text-black hover:text-[#F4AE52] transition-colors" title="Login">
+            <User className="w-6 h-6 stroke-[2.5]" />
           </Link>
           
-          <button className="lg:hidden p-1.5 text-slate-300 hover:text-white transition-colors">
-            <Menu className="w-6 h-6" />
+          <button className="lg:hidden p-1.5 text-black hover:text-[#F4AE52] transition-colors">
+            <Menu className="w-6 h-6 stroke-[2.5]" />
           </button>
         </div>
       </div>

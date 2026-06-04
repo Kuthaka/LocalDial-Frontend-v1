@@ -97,7 +97,7 @@ export default function Home() {
             layout: { type: "spring", stiffness: 200, damping: 25 },
             opacity: { duration: 0.2 }
           }}
-          className={`w-full flex flex-col items-center justify-center ${isSearching ? 'pt-24 md:pt-28' : 'pt-28 md:pt-36 pb-20 min-h-[80vh] md:min-h-[95vh]'}`}
+          className={`w-full flex flex-col items-center justify-start ${isSearching ? 'pt-24 md:pt-28' : 'pt-20 md:pt-28 pb-20 min-h-[80vh] md:min-h-[95vh]'}`}
         >
           {/* Back button only when searching */}
           <AnimatePresence>
@@ -137,11 +137,11 @@ export default function Home() {
                 Welcome to <span className="font-bold text-[#104825]">Nearby Direct</span>
               </h3>
               
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-black text-[#1c2331] mb-5 tracking-tight max-w-4xl leading-[1.05]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#1c2331] mb-4 tracking-tight max-w-3xl leading-[1.1]">
                 Find <span className="text-[#104825]">Everything</span><br/>Around You
               </h1>
               
-              <p className="text-base md:text-lg text-slate-600 font-medium max-w-lg mb-6">
+              <p className="text-sm md:text-base text-slate-600 font-medium max-w-md mb-6">
                 Discover local businesses, services, and more –<br className="hidden md:block"/>all in one place.
               </p>
             </motion.div>
@@ -150,9 +150,9 @@ export default function Home() {
           {/* Search Bar Container */}
           <motion.div 
             layout
-            className="relative z-50 w-full max-w-4xl mx-auto px-4 md:px-0"
+            className="relative z-50 w-full max-w-3xl mx-auto px-4 md:px-0"
           >
-            <div className={`bg-white shadow-[0_20px_40px_rgba(0,0,0,0.06)] flex flex-col md:flex-row overflow-hidden border border-slate-100 transition-all duration-500 ${isSearching ? 'rounded-2xl' : 'rounded-3xl md:rounded-full'} p-2 md:p-2.5 items-center`}>
+            <div className={`bg-white shadow-[0_15px_40px_rgba(0,0,0,0.12)] flex flex-col md:flex-row overflow-hidden border border-black/10 transition-all duration-500 ${isSearching ? 'rounded-2xl' : 'rounded-3xl md:rounded-full'} p-2 md:p-2.5 items-center`}>
               
               {/* Query Input */}
               <div className="flex-1 flex items-center px-4 md:px-6 py-3 w-full">
