@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, Info, Mail, Map, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import LocationModal from "./LocationModal";
 
 export default function Navbar() {
   const [bgScrolled, setBgScrolled] = useState(false);
   const [isLangEn, setIsLangEn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,9 +31,12 @@ export default function Navbar() {
             <a href="tel:+441642343343" className="flex items-center gap-1.5 hover:text-white/80 transition-colors">
               <Phone size={12} className="text-white" /> +44 1642 343 343
             </a>
-            <div className="hidden md:flex items-center gap-1.5">
-              <MapPin size={12} className="text-white" /> Discover Local Businesses
-            </div>
+            <button 
+              onClick={() => setIsLocationModalOpen(true)}
+              className="hidden md:flex items-center gap-1.5 hover:text-[#F4AE52] transition-colors cursor-pointer"
+            >
+              <MapPin size={12} className="text-current" /> Set your location
+            </button>
             <div className="hidden md:flex items-center gap-1.5 text-green-400 font-medium">
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> New businesses available near you
             </div>
@@ -71,6 +76,7 @@ export default function Navbar() {
               FREE
             </div>
           </div>
+
           {/* Search Input */}
           <div className="hidden md:flex items-center bg-white border-2 border-slate-300 rounded-full px-3 py-1.5 w-64 xl:w-80 hover:border-slate-400 transition-colors focus-within:bg-white focus-within:border-[#F4AE52] shadow-sm">
             <Search className="w-4 h-4 text-slate-600 mr-2 flex-shrink-0" />
@@ -120,6 +126,8 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <LocationModal isOpen={isLocationModalOpen} onClose={() => setIsLocationModalOpen(false)} />
     </nav>
   );
 }

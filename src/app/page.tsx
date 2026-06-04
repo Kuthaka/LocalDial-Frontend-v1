@@ -10,6 +10,7 @@ import DiscoverCities from "@/components/DiscoverCities";
 import FeaturedPlaces from "@/components/FeaturedPlaces";
 import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
+import LocationModal from "@/components/LocationModal";
 
 const nearbyBanks = [
   { id: 1, name: "Chase Bank", rating: 4.5, reviews: 128, address: "123 Market St, San Francisco", distance: "0.2 miles", imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&q=80" },
@@ -30,6 +31,7 @@ const nearbyParlours = [
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const suggestions = [
@@ -139,7 +141,7 @@ export default function Home() {
                 Find <span className="text-[#104825]">Everything</span><br/>Around You
               </h1>
               
-              <p className="text-sm md:text-base text-slate-600 font-medium max-w-md mb-6">
+              <p className="text-sm md:text-base text-slate-600 font-medium max-w-[260px] md:max-w-md mb-6 mx-auto">
                 Discover local businesses, services, and more –<br className="hidden md:block"/>all in one place.
               </p>
             </motion.div>
@@ -171,7 +173,10 @@ export default function Home() {
 
               {/* Location Input & Button */}
               <div className="flex items-center justify-between w-full md:w-auto px-4 md:px-2 py-3 md:py-0 border-t md:border-t-0 border-slate-100 mt-2 md:mt-0 gap-4 md:gap-6">
-                <div className="flex items-center text-slate-500 hover:text-slate-800 cursor-pointer transition-colors px-2 md:px-4">
+                <div 
+                  onClick={() => setIsLocationModalOpen(true)}
+                  className="flex items-center text-slate-500 hover:text-slate-800 cursor-pointer transition-colors px-2 md:px-4"
+                >
                   <MapPin className="w-5 h-5 mr-2" />
                   <span className="font-medium text-sm md:text-[15px] whitespace-nowrap">Near me</span>
                 </div>
@@ -352,6 +357,9 @@ export default function Home() {
         </div>
       </div>
       <Footer />
+
+      {/* Location Modal */}
+      <LocationModal isOpen={isLocationModalOpen} onClose={() => setIsLocationModalOpen(false)} />
     </div>
   );
 }
