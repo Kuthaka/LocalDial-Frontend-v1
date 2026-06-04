@@ -81,7 +81,7 @@ export default function Home() {
       
       {/* Light hero background matching the image */}
       <div 
-        className="absolute top-0 left-0 w-full h-[75vh] md:h-[90vh] bg-cover bg-center bg-no-repeat -z-10 rounded-b-[3rem] md:rounded-b-[4rem] overflow-hidden" 
+        className="absolute top-0 left-0 w-full h-[90vh] md:h-[100vh] bg-cover bg-center bg-no-repeat -z-10 rounded-b-[3rem] md:rounded-b-[4rem] overflow-hidden" 
         style={{ backgroundImage: "url('/banners/banner001.png')" }}
       >
         {/* Very subtle overlay in case background needs blending */}
@@ -97,7 +97,7 @@ export default function Home() {
             layout: { type: "spring", stiffness: 200, damping: 25 },
             opacity: { duration: 0.2 }
           }}
-          className={`w-full flex flex-col items-center justify-center ${isSearching ? 'pt-24 md:pt-28' : 'pt-28 md:pt-36 pb-20'}`}
+          className={`w-full flex flex-col items-center justify-center ${isSearching ? 'pt-24 md:pt-28' : 'pt-28 md:pt-36 pb-20 min-h-[80vh] md:min-h-[95vh]'}`}
         >
           {/* Back button only when searching */}
           <AnimatePresence>
@@ -124,19 +124,20 @@ export default function Home() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="flex flex-col items-center text-center mb-6 md:mb-8 z-10 relative w-full"
             >
-              {/* Green map pin icon at the top */}
-              <div className="mb-2 text-[#104825]">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
+              {/* Custom location pin icon at the top */}
+              <div className="mb-2">
+                <img 
+                  src="/icons/location-point-icon-png.webp" 
+                  alt="Location Pin" 
+                  className="w-8 h-8 md:w-9 md:h-9 object-contain"
+                />
               </div>
               
               <h3 className="text-sm md:text-base text-[#1c2331] font-medium mb-3 flex items-center gap-1">
                 Welcome to <span className="font-bold text-[#104825]">Nearby Direct</span>
               </h3>
               
-              <h1 className="text-5xl sm:text-6xl md:text-[5.5rem] font-black text-[#1c2331] mb-5 tracking-tight max-w-4xl leading-[1.05]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-black text-[#1c2331] mb-5 tracking-tight max-w-4xl leading-[1.05]">
                 Find <span className="text-[#104825]">Everything</span><br/>Around You
               </h1>
               
