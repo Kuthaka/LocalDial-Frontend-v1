@@ -19,7 +19,7 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
-      bgScrolled ? "bg-[#4B5694]/95 backdrop-blur-md border-b border-white/5 shadow-lg" : "bg-[#4B5694] md:bg-transparent"
+      bgScrolled ? "bg-[#C1EBE9]/95 backdrop-blur-md border-b border-[#a8d9d7] shadow-lg" : "bg-[#C1EBE9] md:bg-transparent"
     }`}>
       {/* 1. Top Bar (Thin) - Both Desktop & Mobile */}
       <div className="bg-black border-b border-white/10 text-white text-[10px] md:text-xs">
