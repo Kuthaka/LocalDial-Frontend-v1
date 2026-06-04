@@ -57,17 +57,19 @@ export default function Navbar() {
           <span className="text-2xl font-black text-white tracking-wide">NearbyDirect</span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <div className="hidden lg:flex items-center gap-6 font-medium text-[13px] text-slate-200 ml-4">
-          <Link href="#" className="flex items-center gap-1 hover:text-white transition-colors">Home Services <ChevronDown size={14} /></Link>
-          <Link href="#" className="flex items-center gap-1 hover:text-white transition-colors">Education <ChevronDown size={14} /></Link>
-          <Link href="#" className="flex items-center gap-1 hover:text-white transition-colors">Beauty & Spa <ChevronDown size={14} /></Link>
-          <Link href="#" className="flex items-center gap-1 hover:text-white transition-colors">Healthcare <ChevronDown size={14} /></Link>
-          <Link href="#" className="flex items-center gap-1 hover:text-white transition-colors">Restaurants <ChevronDown size={14} /></Link>
-        </div>
 
-        {/* Search, User, Hamburger */}
+
+        {/* CTA, Search, User, Hamburger */}
         <div className="flex items-center gap-4 lg:gap-5 flex-shrink-0 ml-auto">
+          {/* List Your Business CTA */}
+          <div className="relative hidden sm:block mr-2 mt-1">
+            <Link href="/business/signup" className="bg-white text-[#111844] font-bold px-4 py-2 rounded-lg text-sm hover:bg-slate-100 transition-colors shadow-sm">
+              List Your Business
+            </Link>
+            <div className="absolute -top-3 -right-2 bg-green-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-md transform rotate-[10deg] border border-[#4B5694]">
+              FREE
+            </div>
+          </div>
           {/* Search Input */}
           <div className="hidden md:flex items-center bg-white/10 border border-white/20 rounded-full px-3 py-1.5 w-64 xl:w-80 hover:bg-white/15 transition-colors focus-within:bg-white/15 focus-within:border-white/30">
             <Search className="w-4 h-4 text-slate-300 mr-2 flex-shrink-0" />
