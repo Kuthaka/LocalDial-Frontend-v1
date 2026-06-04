@@ -80,7 +80,7 @@ export default function Home() {
     <div className="min-h-screen w-full bg-[#f8f9fa] flex flex-col items-center relative overflow-x-hidden transition-colors duration-500 z-0">
       
       {/* Dark hero background matching blue theme */}
-      <div className="absolute top-0 left-0 w-full h-[60vh] md:h-[75vh] bg-[#111844] -z-10 rounded-b-[3rem] md:rounded-b-[4rem]" />
+      <div className="absolute top-0 left-0 w-full h-[75vh] md:h-[90vh] bg-[#111844] -z-10 rounded-b-[3rem] md:rounded-b-[4rem]" />
 
       <div className="w-full max-w-7xl px-4 md:px-6 relative flex flex-col flex-1">
         <Navbar />
@@ -91,7 +91,7 @@ export default function Home() {
             layout: { type: "spring", stiffness: 200, damping: 25 },
             opacity: { duration: 0.2 }
           }}
-          className={`w-full flex flex-col ${isSearching ? 'pt-32 md:pt-40' : 'pt-36 md:pt-48'}`}
+          className={`w-full flex flex-col ${isSearching ? 'pt-32 md:pt-40' : 'pt-36 md:pt-48 min-h-[75vh] md:min-h-[90vh]'}`}
         >
           {/* Back button only when searching */}
           <AnimatePresence>
@@ -167,6 +167,32 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
+
+          {/* Quick Tags inside Hero */}
+          {!isSearching && (
+            <motion.div 
+              layout
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mt-6 flex flex-wrap justify-center gap-2 md:gap-3 px-4 relative z-50 max-w-4xl mx-auto w-full"
+            >
+              {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
+                <motion.span 
+                  key={tag} 
+                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setSearchQuery(tag);
+                    setIsSearching(true);
+                  }}
+                  className="px-3 md:px-5 py-2 md:py-2.5 bg-white/10 text-white rounded-full text-xs md:text-sm font-bold border border-white/20 cursor-pointer transition-colors whitespace-nowrap shadow-sm"
+                >
+                  {tag}
+                </motion.span>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Dynamic Content Area */}
@@ -254,23 +280,6 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 className="w-full flex flex-col items-center"
               >
-                <div className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-3 px-4">
-                  {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
-                    <motion.span 
-                      key={tag} 
-                      whileHover={{ scale: 1.05, backgroundColor: "#11184411" }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        setSearchQuery(tag);
-                        setIsSearching(true);
-                      }}
-                      className="px-3 md:px-5 py-2 md:py-2.5 bg-[#111844]/10 text-[#111844] rounded-full text-xs md:text-sm font-bold border border-[#111844]/20 cursor-pointer transition-colors whitespace-nowrap"
-                    >
-                      {tag}
-                    </motion.span>
-                  ))}
-                </div>
-                
                 {/* Horizontal rule with Review CTA */}
                 <ReviewDivider />
                 
