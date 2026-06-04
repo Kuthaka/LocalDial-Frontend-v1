@@ -5,7 +5,6 @@ import { Search, MapPin, Phone, ArrowLeft, Clock, TrendingUp, Star, ChevronRight
 import { motion, AnimatePresence } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
-import ReviewDivider from "@/components/ReviewDivider";
 import CategorySection from "@/components/CategorySection";
 import DiscoverCities from "@/components/DiscoverCities";
 import FeaturedPlaces from "@/components/FeaturedPlaces";
@@ -81,8 +80,7 @@ export default function Home() {
       
       {/* Light hero background matching the image */}
       <div 
-        className="absolute top-0 left-0 w-full h-[90vh] md:h-[100vh] bg-cover bg-center bg-no-repeat -z-10 rounded-b-[3rem] md:rounded-b-[4rem] overflow-hidden" 
-        style={{ backgroundImage: "url('/banners/banner001.png')" }}
+        className="absolute top-0 left-0 w-full h-[90vh] md:h-[95vh] bg-cover bg-center bg-no-repeat -z-10 rounded-b-[3rem] md:rounded-b-[4rem] overflow-hidden bg-[url('/banners/banner-mob.png')] md:bg-[url('/banners/banner001.png')]" 
       >
         {/* Very subtle overlay in case background needs blending */}
         <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] md:backdrop-blur-none"></div>
@@ -97,7 +95,7 @@ export default function Home() {
             layout: { type: "spring", stiffness: 200, damping: 25 },
             opacity: { duration: 0.2 }
           }}
-          className={`w-full flex flex-col items-center justify-start ${isSearching ? 'pt-24 md:pt-28' : 'pt-20 md:pt-28 pb-20 min-h-[80vh] md:min-h-[95vh]'}`}
+          className={`w-full flex flex-col items-center justify-start ${isSearching ? 'pt-32 md:pt-36' : 'pt-32 md:pt-36 pb-20 min-h-[90vh] md:min-h-[95vh]'}`}
         >
           {/* Back button only when searching */}
           <AnimatePresence>
@@ -152,7 +150,7 @@ export default function Home() {
             layout
             className="relative z-50 w-full max-w-3xl mx-auto px-4 md:px-0"
           >
-            <div className={`bg-white shadow-[0_15px_40px_rgba(0,0,0,0.12)] flex flex-col md:flex-row overflow-hidden border border-black/10 transition-all duration-500 ${isSearching ? 'rounded-2xl' : 'rounded-3xl md:rounded-full'} p-2 md:p-2.5 items-center`}>
+            <div className={`bg-white shadow-[0_15px_40px_rgba(0,0,0,0.18)] md:shadow-[0_15px_40px_rgba(0,0,0,0.12)] flex flex-col md:flex-row overflow-hidden border-2 border-slate-200 md:border md:border-black/10 transition-all duration-500 ${isSearching ? 'rounded-2xl' : 'rounded-3xl md:rounded-full'} p-2 md:p-2.5 items-center`}>
               
               {/* Query Input */}
               <div className="flex-1 flex items-center px-4 md:px-6 py-3 w-full">
@@ -273,9 +271,6 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 className="w-full flex flex-col items-center"
               >
-                {/* Horizontal rule with Review CTA */}
-                <ReviewDivider />
-                
                 {/* Overlapping Categories Grid */}
                 <div className="w-full max-w-7xl mx-auto mt-4 md:mt-8 mb-16 relative z-10 px-4 md:px-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

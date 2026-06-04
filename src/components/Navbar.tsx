@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, HelpCircle, Info, Mail, Map, ArrowUpRight } from "lucide-react";
+import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, Info, Mail, Map, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 export default function Navbar() {
   const [bgScrolled, setBgScrolled] = useState(false);
   const [isLangEn, setIsLangEn] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,12 +88,38 @@ export default function Navbar() {
             <User className="w-6 h-6 stroke-[2.5]" />
           </Link>
           
-          <button className="lg:hidden p-1.5 text-black hover:text-[#F4AE52] transition-colors">
-            <Menu className="w-6 h-6 stroke-[2.5]" />
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden p-1.5 text-black hover:text-[#F4AE52] transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6 stroke-[2.5]" /> : <Menu className="w-6 h-6 stroke-[2.5]" />}
           </button>
         </div>
       </div>
 
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden bg-white border-t border-slate-100 overflow-hidden shadow-xl"
+          >
+            <div className="flex flex-col p-5 gap-4">
+              <Link href="/business/signup" onClick={() => setIsMobileMenuOpen(false)} className="bg-[#F4AE52] text-center text-slate-900 font-bold px-4 py-3 rounded-lg text-sm hover:bg-[#e09c40] transition-colors shadow-sm">
+                List Your Business (FREE)
+              </Link>
+              <div className="h-px bg-slate-100 w-full my-1"></div>
+              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Home Services</Link>
+              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Education</Link>
+              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Beauty & Spa</Link>
+              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Healthcare</Link>
+              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Restaurants</Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
