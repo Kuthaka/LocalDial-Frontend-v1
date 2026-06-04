@@ -11,6 +11,7 @@ import FeaturedPlaces from "@/components/FeaturedPlaces";
 import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
 import LocationModal from "@/components/LocationModal";
+import { useLocation } from "@/hooks/useLocation";
 
 const nearbyBanks = [
   { id: 1, name: "Chase Bank", rating: 4.5, reviews: 128, address: "123 Market St, San Francisco", distance: "0.2 miles", imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&q=80" },
@@ -32,6 +33,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [location] = useLocation();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const suggestions = [
@@ -175,10 +177,10 @@ export default function Home() {
               <div className="flex items-center justify-between w-full md:w-auto px-4 md:px-2 py-3 md:py-0 border-t md:border-t-0 border-slate-100 mt-2 md:mt-0 gap-4 md:gap-6">
                 <div 
                   onClick={() => setIsLocationModalOpen(true)}
-                  className="flex items-center text-slate-500 hover:text-slate-800 cursor-pointer transition-colors px-2 md:px-4"
+                  className="flex items-center text-slate-500 hover:text-slate-800 cursor-pointer transition-colors px-2 md:px-4 max-w-[120px] md:max-w-[160px]"
                 >
-                  <MapPin className="w-5 h-5 mr-2" />
-                  <span className="font-medium text-sm md:text-[15px] whitespace-nowrap">Near me</span>
+                  <MapPin className="w-5 h-5 mr-2 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-[15px] whitespace-nowrap truncate">{location || "Near me"}</span>
                 </div>
                 
                 <button className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#104825] hover:bg-[#0c361c] flex items-center justify-center text-white flex-shrink-0 transition-colors shadow-lg shadow-[#104825]/20">

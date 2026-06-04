@@ -5,12 +5,14 @@ import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, I
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LocationModal from "./LocationModal";
+import { useLocation } from "@/hooks/useLocation";
 
 export default function Navbar() {
   const [bgScrolled, setBgScrolled] = useState(false);
   const [isLangEn, setIsLangEn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [location] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,9 +35,10 @@ export default function Navbar() {
             </a>
             <button 
               onClick={() => setIsLocationModalOpen(true)}
-              className="hidden md:flex items-center gap-1.5 hover:text-[#F4AE52] transition-colors cursor-pointer"
+              className="hidden md:flex items-center gap-1.5 hover:text-[#F4AE52] transition-colors cursor-pointer max-w-[200px]"
             >
-              <MapPin size={12} className="text-current" /> Set your location
+              <MapPin size={12} className="text-current flex-shrink-0" /> 
+              <span className="truncate">{location || "Set your location"}</span>
             </button>
             <div className="hidden md:flex items-center gap-1.5 text-green-400 font-medium">
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> New businesses available near you
