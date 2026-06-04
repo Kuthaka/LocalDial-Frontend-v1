@@ -3,15 +3,33 @@
 import { useState, useEffect } from "react";
 import { X, Search, MapPin, Navigation, Loader2, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation } from "@/hooks/useLocation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { setLocation as setReduxLocation } from "@/store/locationSlice";
 
 export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isLocating, setIsLocating] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [globalLocation, setGlobalLocation] = useLocation();
+  
+  const dispatch = useDispatch();
+  const globalLocation = useSelector((state: RootState) => state.location.currentLocation);
+  
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Lock background scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   // Sync search input with global location when modal opens
   useEffect(() => {
@@ -45,7 +63,7 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
 
   const finalizeLocation = (locName: string) => {
     setSearch(locName);
-    setGlobalLocation(locName);
+    dispatch(setReduxLocation(locName));
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
@@ -103,7 +121,7 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-100">
@@ -157,7 +175,7 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
             </div>
 
             {/* Suggestions / Popular Locations */}
-            <div className="flex-1 overflow-y-auto max-h-[40vh] p-5 pt-0">
+            <div className="flex-1 overflow-y-auto max-h-[50vh] p-5 pt-0">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
                 {suggestions.length > 0 ? "Search Results" : "Popular Cities"}
               </h3>

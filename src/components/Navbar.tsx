@@ -5,14 +5,15 @@ import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, I
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LocationModal from "./LocationModal";
-import { useLocation } from "@/hooks/useLocation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function Navbar() {
   const [bgScrolled, setBgScrolled] = useState(false);
   const [isLangEn, setIsLangEn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [location] = useLocation();
+  const location = useSelector((state: RootState) => state.location.currentLocation);
 
   useEffect(() => {
     const handleScroll = () => {

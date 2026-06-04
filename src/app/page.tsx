@@ -11,7 +11,8 @@ import FeaturedPlaces from "@/components/FeaturedPlaces";
 import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
 import LocationModal from "@/components/LocationModal";
-import { useLocation } from "@/hooks/useLocation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const nearbyBanks = [
   { id: 1, name: "Chase Bank", rating: 4.5, reviews: 128, address: "123 Market St, San Francisco", distance: "0.2 miles", imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&q=80" },
@@ -33,7 +34,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [location] = useLocation();
+  const location = useSelector((state: RootState) => state.location.currentLocation);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const suggestions = [
