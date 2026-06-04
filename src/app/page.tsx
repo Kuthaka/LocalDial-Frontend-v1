@@ -79,8 +79,14 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-[#f8f9fa] flex flex-col items-center relative overflow-x-hidden transition-colors duration-500 z-0">
       
-      {/* Dark hero background matching blue theme */}
-      <div className="absolute top-0 left-0 w-full h-[75vh] md:h-[90vh] bg-[#111844] -z-10 rounded-b-[3rem] md:rounded-b-[4rem]" />
+      {/* Light hero background matching the image */}
+      <div 
+        className="absolute top-0 left-0 w-full h-[75vh] md:h-[90vh] bg-cover bg-center bg-no-repeat -z-10 rounded-b-[3rem] md:rounded-b-[4rem] overflow-hidden" 
+        style={{ backgroundImage: "url('/banners/banner001.png')" }}
+      >
+        {/* Very subtle overlay in case background needs blending */}
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] md:backdrop-blur-none"></div>
+      </div>
 
       <div className="w-full max-w-7xl px-4 md:px-6 relative flex flex-col flex-1">
         <Navbar />
@@ -91,7 +97,7 @@ export default function Home() {
             layout: { type: "spring", stiffness: 200, damping: 25 },
             opacity: { duration: 0.2 }
           }}
-          className={`w-full flex flex-col ${isSearching ? 'pt-32 md:pt-40' : 'pt-36 md:pt-48 min-h-[75vh] md:min-h-[90vh]'}`}
+          className={`w-full flex flex-col items-center justify-center ${isSearching ? 'pt-24 md:pt-28' : 'pt-28 md:pt-36 pb-20'}`}
         >
           {/* Back button only when searching */}
           <AnimatePresence>
@@ -116,83 +122,69 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="text-center mb-6 md:mb-10 mt-8 md:mt-4"
+              className="flex flex-col items-center text-center mb-6 md:mb-8 z-10 relative w-full"
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
-                Fast, Free way to get experts
-              </h1>
-              <p className="text-lg md:text-2xl text-slate-200 mb-2 font-medium">
-                Discover Top Experts in <span className="font-bold text-white">Nearby</span>
-              </p>
-              <div className="relative inline-block mt-2">
-                <span className="text-xl md:text-2xl font-black text-orange-400">
-                  Skilled, Trusted, Reliable!
-                </span>
-                <svg className="absolute w-full h-3 -bottom-3 left-0 text-orange-500" viewBox="0 0 100 20" preserveAspectRatio="none">
-                  <path d="M0 10 Q 50 20 100 10" fill="transparent" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+              {/* Green map pin icon at the top */}
+              <div className="mb-2 text-[#104825]">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
                 </svg>
               </div>
+              
+              <h3 className="text-sm md:text-base text-[#1c2331] font-medium mb-3 flex items-center gap-1">
+                Welcome to <span className="font-bold text-[#104825]">Nearby Direct</span>
+              </h3>
+              
+              <h1 className="text-5xl sm:text-6xl md:text-[5.5rem] font-black text-[#1c2331] mb-5 tracking-tight max-w-4xl leading-[1.05]">
+                Find <span className="text-[#104825]">Everything</span><br/>Around You
+              </h1>
+              
+              <p className="text-base md:text-lg text-slate-600 font-medium max-w-lg mb-6">
+                Discover local businesses, services, and more –<br className="hidden md:block"/>all in one place.
+              </p>
             </motion.div>
           )}
 
           {/* Search Bar Container */}
           <motion.div 
             layout
-            className="relative z-50 w-full max-w-4xl mx-auto"
+            className="relative z-50 w-full max-w-4xl mx-auto px-4 md:px-0"
           >
-            <div className={`bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col md:flex-row overflow-hidden border border-slate-100 transition-all duration-500 ${isSearching ? 'rounded-xl' : 'rounded-lg md:rounded-2xl'}`}>
+            <div className={`bg-white shadow-[0_20px_40px_rgba(0,0,0,0.06)] flex flex-col md:flex-row overflow-hidden border border-slate-100 transition-all duration-500 ${isSearching ? 'rounded-2xl' : 'rounded-3xl md:rounded-full'} p-2 md:p-2.5 items-center`}>
               
-              {/* Location Input */}
-              <div className="flex-1 flex items-center px-4 py-3 md:py-4 border-b md:border-b-0 md:border-r border-slate-200">
-                <MapPin className="text-slate-400 w-5 h-5 mr-3 flex-shrink-0" />
-                <input 
-                  type="text" 
-                  placeholder="Nearby" 
-                  className="w-full bg-transparent outline-none text-slate-900 text-sm md:text-base placeholder:text-slate-500 font-medium"
-                />
-              </div>
-
               {/* Query Input */}
-              <div className="flex-[2] flex items-center px-4 py-3 md:py-4">
-                <Search className="text-slate-400 w-5 h-5 mr-3 flex-shrink-0" />
+              <div className="flex-1 flex items-center px-4 md:px-6 py-3 w-full">
+                <Search className="text-slate-400 w-5 h-5 md:w-6 md:h-6 mr-3 md:mr-4 flex-shrink-0" />
                 <input 
                   ref={searchInputRef}
                   type="text" 
-                  placeholder="Find your service" 
+                  placeholder="Search for businesses, services, or categories..." 
                   onFocus={() => setIsSearching(true)}
-                  className="w-full bg-transparent outline-none text-slate-900 text-sm md:text-base placeholder:text-slate-500 font-medium"
+                  className="w-full bg-transparent outline-none text-[#1c2331] text-sm md:text-[15px] placeholder:text-slate-400 font-medium"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+
+              {/* Vertical Divider */}
+              <div className="hidden md:block w-px h-10 bg-slate-200 mx-2"></div>
+
+              {/* Location Input & Button */}
+              <div className="flex items-center justify-between w-full md:w-auto px-4 md:px-2 py-3 md:py-0 border-t md:border-t-0 border-slate-100 mt-2 md:mt-0 gap-4 md:gap-6">
+                <div className="flex items-center text-slate-500 hover:text-slate-800 cursor-pointer transition-colors px-2 md:px-4">
+                  <MapPin className="w-5 h-5 mr-2" />
+                  <span className="font-medium text-sm md:text-[15px] whitespace-nowrap">Near me</span>
+                </div>
+                
+                <button className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#104825] hover:bg-[#0c361c] flex items-center justify-center text-white flex-shrink-0 transition-colors shadow-lg shadow-[#104825]/20">
+                  <Search className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
             </div>
           </motion.div>
 
-          {/* Quick Tags inside Hero */}
-          {!isSearching && (
-            <motion.div 
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="mt-6 flex flex-wrap justify-center gap-2 md:gap-3 px-4 relative z-50 max-w-4xl mx-auto w-full"
-            >
-              {['Restaurants', 'Plumbers', 'Clinics', 'Groceries', 'Electricians'].map((tag) => (
-                <motion.span 
-                  key={tag} 
-                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setSearchQuery(tag);
-                    setIsSearching(true);
-                  }}
-                  className="px-3 md:px-5 py-2 md:py-2.5 bg-white/10 text-white rounded-full text-xs md:text-sm font-bold border border-white/20 cursor-pointer transition-colors whitespace-nowrap shadow-sm"
-                >
-                  {tag}
-                </motion.span>
-              ))}
-            </motion.div>
-          )}
+
         </motion.div>
 
         {/* Dynamic Content Area */}
