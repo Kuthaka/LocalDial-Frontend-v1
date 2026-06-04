@@ -5,7 +5,7 @@ import { logout } from '@/app/actions/auth'
 import { Shield, Building2, Check, X, LogOut, Clock, Mail } from 'lucide-react'
 
 export const metadata = {
-  title: 'Admin Dashboard - LocalDial',
+  title: 'Admin Dashboard - NearbyDirect',
 }
 
 export default async function AdminDashboard() {

@@ -4,7 +4,7 @@ import { logout } from '@/app/actions/auth'
 import { Building2, LogOut, LayoutDashboard, Settings } from 'lucide-react'
 
 export const metadata = {
-  title: 'Business Dashboard - LocalDial',
+  title: 'Business Dashboard - NearbyDirect',
 }
 
 export default async function BusinessDashboard() {

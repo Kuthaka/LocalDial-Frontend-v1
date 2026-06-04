@@ -68,7 +68,7 @@ export default function BusinessLogin() {
         <div className="bg-[#111844] p-8 text-white text-center">
           <Store className="w-12 h-12 mx-auto mb-4 text-indigo-300" />
           <h1 className="text-2xl font-bold mb-2">Business Portal</h1>
-          <p className="text-indigo-100/80">Manage your LocalDial presence</p>
+          <p className="text-indigo-100/80">Manage your NearbyDirect presence</p>
         </div>
 
         <div className="p-8">

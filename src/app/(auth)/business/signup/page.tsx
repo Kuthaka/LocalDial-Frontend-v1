@@ -244,7 +244,7 @@ function BusinessSignupContent() {
     <>
       <AnimatePresence mode="wait">
         {step === 1 && (
-          <StepContainer key="step1" step={step} title="List Your Business for FREE" subtitle="with LocalDial - Reach thousands of customers daily.">
+          <StepContainer key="step1" step={step} title="List Your Business for FREE" subtitle="with NearbyDirect - Reach thousands of customers daily.">
             <form onSubmit={handleEmailSubmit} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 block">Enter Email Address</label>
@@ -367,7 +367,7 @@ function BusinessSignupContent() {
         )}
 
         {step === 3 && (
-          <StepContainer key="step3" step={step} title="Add Contact Details" subtitle="How customers and LocalDial can reach you.">
+          <StepContainer key="step3" step={step} title="Add Contact Details" subtitle="How customers and NearbyDirect can reach you.">
             <form onSubmit={handleContactSubmit} className="space-y-6">
               <div className="flex gap-4">
                 <select className="p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#111844] outline-none bg-white w-24">
@@ -754,7 +754,7 @@ function BusinessSignupContent() {
               
               <h1 className="text-3xl font-black text-[#111844] mb-4">Congratulations! 🎉</h1>
               <p className="text-lg text-slate-600 mb-2">Your business <strong>{businessDetails.name || 'Account'}</strong> is now registered.</p>
-              <p className="text-slate-500 mb-8">You are now part of the LocalDial network. Customers can now discover your services easily!</p>
+              <p className="text-slate-500 mb-8">You are now part of the NearbyDirect network. Customers can now discover your services easily!</p>
               
               <div className="bg-gradient-to-br from-[#111844] to-[#1e2a78] rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
                 <Star className="absolute -right-10 -top-10 w-40 h-40 text-white opacity-5" />

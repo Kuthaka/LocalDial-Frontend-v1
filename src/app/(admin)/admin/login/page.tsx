@@ -49,7 +49,7 @@ export default function AdminLogin() {
                   type="email"
                   required
                   className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                  placeholder="admin@localdial.com"
+                  placeholder="admin@nearbydirect.com"
                 />
               </div>
             </div>
