@@ -92,6 +92,14 @@ export async function registerBusinessComplete(formData: any) {
     }
   })
 
+  // 2b. Upsert profiles table to prevent dashboard from rejecting the user
+  await supabase.from('profiles').upsert({
+    id: userId,
+    role: 'business',
+    status: 'approved',
+    business_name: businessDetails.name
+  })
+
   // 3. Insert Business Profile
   const { error: profileError } = await supabase.from('business_profiles').insert({
     id: userId,

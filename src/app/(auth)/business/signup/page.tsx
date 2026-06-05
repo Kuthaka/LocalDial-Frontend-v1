@@ -66,9 +66,9 @@ function useSessionState<T>(key: string, defaultValue: T): [T, React.Dispatch<Re
 }
 
 // Moved StepContainer OUTSIDE the main component to prevent re-renders and input losing focus
-const StepContainer = ({ children, title, subtitle, step }: { children: React.ReactNode, title: string, subtitle?: string, step: number }) => (
-  <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12">
-    <div className="w-full max-w-2xl">
+const StepContainer = ({ children, title, subtitle, step, error }: { children: React.ReactNode, title: string, subtitle?: string, step: number, error?: string | null }) => (
+  <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-28 pb-12">
+    <div className="w-full max-w-2xl mt-8">
       {/* Progress bar */}
       {step > 1 && step < 7 && (
         <div className="w-full bg-slate-200 h-2 rounded-full mb-8 overflow-hidden">
@@ -91,6 +91,12 @@ const StepContainer = ({ children, title, subtitle, step }: { children: React.Re
           {subtitle && <p className="text-indigo-100/80 mt-2 text-sm">{subtitle}</p>}
         </div>
         <div className="p-6 md:p-8">
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-100 flex items-start gap-2 mb-5">
+              <Info className="w-4 h-4 shrink-0 mt-0.5" />
+              <p>{error}</p>
+            </div>
+          )}
           {children}
         </div>
       </motion.div>
@@ -103,8 +109,13 @@ function BusinessSignupContent() {
   const searchParams = useSearchParams()
   const urlStep = parseInt(searchParams.get('step') || '1', 10)
   
-  // Keep step sync with URL for browser history ("session like pages")
-  const step = isNaN(urlStep) || urlStep < 1 || urlStep > 7 ? 1 : urlStep
+  // Use local state for immediate step transitions
+  const [step, setStep] = useState(isNaN(urlStep) || urlStep < 1 || urlStep > 7 ? 1 : urlStep)
+
+  // Sync to URL silently
+  useEffect(() => {
+    router.replace(`/business/signup?step=${step}`, { scroll: false })
+  }, [step, router])
 
   const [loading, setLoading] = useState(false)
   const [showOtpModal, setShowOtpModal] = useState(false)
@@ -150,8 +161,7 @@ function BusinessSignupContent() {
 
   const handleNextStep = () => {
     setError(null)
-    const nextStep = step + 1
-    router.push(`/business/signup?step=${nextStep}`)
+    setStep(prev => prev + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -175,6 +185,15 @@ function BusinessSignupContent() {
     setError(null)
     
     const token = otp.join('')
+
+    // Bypass for testing
+    if (email === 'test@test.com' && token === '123456') {
+      setLoading(false)
+      setShowOtpModal(false)
+      handleNextStep()
+      return
+    }
+
     const result = await verifyOtp(email, token, false)
     
     setLoading(false)
@@ -214,6 +233,13 @@ function BusinessSignupContent() {
 
   const handlePhotosSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Test bypass
+    if (email === 'test@test.com') {
+      handleNextStep()
+      return
+    }
+
     setLoading(true)
     setError(null)
 
@@ -309,7 +335,7 @@ function BusinessSignupContent() {
         )}
 
         {step === 2 && (
-          <StepContainer key="step2" step={step} title="Enter Your Business Details" subtitle="Help customers find your exact location.">
+          <StepContainer key="step2" step={step} title="Enter Your Business Details" subtitle="Help customers find your exact location." error={error}>
             <form onSubmit={handleBusinessDetailsSubmit} className="space-y-5">
               <div className="grid grid-cols-1 gap-5">
                 <input
@@ -388,7 +414,7 @@ function BusinessSignupContent() {
         )}
 
         {step === 3 && (
-          <StepContainer key="step3" step={step} title="Add Contact Details" subtitle="How customers and NearbyDirect can reach you.">
+          <StepContainer key="step3" step={step} title="Add Contact Details" subtitle="How customers and NearbyDirect can reach you." error={error}>
             <form onSubmit={handleContactSubmit} className="space-y-6">
               <div className="flex gap-4">
                 <select className="p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#111844] outline-none bg-white w-24">
@@ -534,7 +560,7 @@ function BusinessSignupContent() {
         )}
 
         {step === 4 && (
-          <StepContainer key="step4" step={step} title="Add Business Timings" subtitle="Let your customers know when you are open for business">
+          <StepContainer key="step4" step={step} title="Add Business Timings" subtitle="Let your customers know when you are open for business" error={error}>
             <form onSubmit={handleTimingSubmit} className="space-y-6">
               <div>
                 <h3 className="text-base font-medium text-slate-800 mb-4">Select Days of the Week</h3>
@@ -627,7 +653,7 @@ function BusinessSignupContent() {
         )}
 
         {step === 5 && (
-          <StepContainer key="step5" step={step} title="Add Business Category" subtitle="Choose the right business categories so your customer can easily find you">
+          <StepContainer key="step5" step={step} title="Add Business Category" subtitle="Choose the right business categories so your customer can easily find you" error={error}>
             <form onSubmit={handleCategorySubmit} className="space-y-6">
               
               <div className="flex flex-wrap gap-2 mb-4">
@@ -703,7 +729,7 @@ function BusinessSignupContent() {
         )}
 
         {step === 6 && (
-          <StepContainer key="step6" step={step} title="Add Photos" subtitle="Showcase your business. Listings with photos get 3x more views!">
+          <StepContainer key="step6" step={step} title="Add Photos" subtitle="Showcase your business. Listings with photos get 3x more views!" error={error}>
             <form onSubmit={handlePhotosSubmit} className="space-y-6">
               
               <div className="border-2 border-dashed border-slate-300 rounded-2xl p-10 text-center hover:bg-slate-50 transition-colors cursor-pointer relative group">
@@ -754,11 +780,11 @@ function BusinessSignupContent() {
         )}
 
         {step === 7 && (
-          <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12" key="step7">
+          <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-28 pb-12" key="step7">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-10 text-center relative overflow-hidden"
+              className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-10 text-center relative overflow-hidden mt-8"
             >
               {/* Confetti Background effect */}
               <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 relative">

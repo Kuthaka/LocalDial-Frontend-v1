@@ -33,7 +33,8 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone()
   const path = url.pathname
 
-  const isBusinessAuthRoute = path === '/business/login' || path === '/business/signup'
+  const isBusinessLoginRoute = path === '/business/login'
+  const isBusinessSignupRoute = path === '/business/signup'
   const isAdminAuthRoute = path === '/admin/login'
   const isBusinessProtectedRoute = path.startsWith('/business/dashboard')
   const isAdminProtectedRoute = path.startsWith('/admin/dashboard')
@@ -51,7 +52,14 @@ export async function middleware(request: NextRequest) {
 
   // Logged in -> Trying to access login/signup pages
   if (user) {
-    if (isBusinessAuthRoute) {
+    const isFullyRegistered = user.user_metadata?.role === 'business'
+
+    if (isBusinessLoginRoute) {
+      url.pathname = '/business/dashboard'
+      return NextResponse.redirect(url)
+    }
+
+    if (isBusinessSignupRoute && isFullyRegistered) {
       url.pathname = '/business/dashboard'
       return NextResponse.redirect(url)
     }
