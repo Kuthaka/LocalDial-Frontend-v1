@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { sendOtp, verifyOtp, registerBusinessComplete } from '@/app/actions/auth'
+import Navbar from '@/components/Navbar'
 import {
   Building2,
   Mail,
@@ -242,49 +243,69 @@ function BusinessSignupContent() {
 
   return (
     <>
+      <Navbar />
       <AnimatePresence mode="wait">
         {step === 1 && (
-          <StepContainer key="step1" step={step} title="List Your Business for FREE" subtitle="with NearbyDirect - Reach thousands of customers daily.">
-            <form onSubmit={handleEmailSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 block">Enter Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#111844] focus:border-transparent transition-all text-lg"
-                    placeholder="e.g. contact@yourbusiness.com"
-                  />
-                </div>
-              </div>
-              
-              {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm border border-red-100">
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading || !email}
-                className="w-full bg-[#111844] hover:bg-[#111844]/90 text-white font-bold py-4 px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 text-lg"
+          <div key="step1" className="min-h-screen relative flex items-center bg-cover bg-center" style={{ backgroundImage: "url('/banners/business-signup.png')" }}>
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-full max-w-[380px] mt-24 bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20"
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Start Now'}
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <div className="pt-4 border-t border-slate-100 mt-6 text-center">
-                <p className="text-sm text-slate-600">
-                  By continuing, you agree to our Terms of Use and Privacy Policy.
-                </p>
-                <p className="mt-4 text-sm text-slate-600">
-                  Already registered? <Link href="/business/login" className="text-[#111844] font-bold hover:underline">Sign in</Link>
-                </p>
-              </div>
-            </form>
-          </StepContainer>
+                <div className="bg-white/60 p-6 relative overflow-hidden border-b border-slate-100">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-[#104825]/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-xl"></div>
+                  <h1 className="text-2xl font-black mb-1.5 relative z-10 text-[#1c2331]">List Your Business for <span className="text-[#104825]">FREE</span></h1>
+                  <p className="text-slate-600 text-sm font-medium relative z-10 leading-snug">with NearbyDirect - Reach thousands of customers daily.</p>
+                </div>
+                <div className="p-6">
+                  <form onSubmit={handleEmailSubmit} className="space-y-5">
+                    <div className="space-y-1.5">
+                      <label className="text-[13px] font-bold text-[#1c2331] block ml-1">Enter Email Address</label>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#104825] transition-colors" />
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full pl-11 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#104825]/10 focus:border-[#104825] transition-all text-[15px] shadow-sm"
+                          placeholder="e.g. contact@yourbusiness.com"
+                        />
+                      </div>
+                    </div>
+                    
+                    {error && (
+                      <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-100 flex items-start gap-2">
+                        <Info className="w-4 h-4 shrink-0 mt-0.5" />
+                        <p>{error}</p>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={loading || !email}
+                      className="w-full bg-[#104825] hover:bg-[#0c361c] text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 text-[15px] shadow-[0_8px_30px_rgba(16,72,37,0.2)] hover:shadow-[0_8px_30px_rgba(16,72,37,0.3)] hover:-translate-y-0.5 active:translate-y-0"
+                    >
+                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Start Now'}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <div className="pt-4 mt-6 text-center">
+                      <p className="text-[11px] text-slate-500 mb-4 leading-tight">
+                        By continuing, you agree to our Terms of Use and Privacy Policy.
+                      </p>
+                      <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <p className="text-[13px] text-[#1c2331] font-medium">
+                          Already registered? <Link href="/business/login" className="text-[#104825] font-bold hover:underline ml-1">Sign in here</Link>
+                        </p>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         )}
 
         {step === 2 && (
