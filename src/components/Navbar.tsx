@@ -13,9 +13,11 @@ export default function Navbar() {
   const [isLangEn, setIsLangEn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const location = useSelector((state: RootState) => state.location.currentLocation);
 
   useEffect(() => {
+    setIsMounted(true);
     const handleScroll = () => {
       setBgScrolled(window.scrollY > 20);
     };
@@ -39,7 +41,7 @@ export default function Navbar() {
               className="hidden md:flex items-center gap-1.5 hover:text-[#F4AE52] transition-colors cursor-pointer max-w-[200px]"
             >
               <MapPin size={12} className="text-current flex-shrink-0" /> 
-              <span className="truncate">{location || "Set your location"}</span>
+              <span className="truncate">{isMounted ? (location || "Set your location") : "Set your location"}</span>
             </button>
             <div className="hidden md:flex items-center gap-1.5 text-green-400 font-medium">
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> New businesses available near you
