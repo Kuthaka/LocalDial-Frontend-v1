@@ -10,6 +10,7 @@ import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
 import LocationModal from "@/components/LocationModal";
 import PopularSection from "@/components/PopularSection";
+import FAQSection from "@/components/FAQSection";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
@@ -318,6 +319,10 @@ export default function Home() {
           </AnimatePresence>
         </div>
       </div>
+      
+      {/* FAQ Section */}
+      <FAQSection />
+      
       <Footer />
 
       {/* Location Modal */}

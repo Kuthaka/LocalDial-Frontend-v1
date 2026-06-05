@@ -3,14 +3,23 @@
 import { motion } from "framer-motion";
 
 const majorCities = [
-  { name: "Chennai", imageUrl: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=500&q=80" },
+  // Kerala Cities (First)
+  { name: "Malappuram", imageUrl: "https://picsum.photos/seed/malappuram/500/500" },
+  { name: "Perinthalmanna", imageUrl: "https://picsum.photos/seed/perinthalmanna/500/500" },
+  { name: "Kochi", imageUrl: "https://picsum.photos/seed/kochi/500/500" },
+  { name: "Trivandrum", imageUrl: "https://picsum.photos/seed/trivandrum/500/500" },
+  { name: "Kozhikode", imageUrl: "https://picsum.photos/seed/kozhikode/500/500" },
+  { name: "Thrissur", imageUrl: "https://picsum.photos/seed/thrissur/500/500" },
+  { name: "Alappuzha", imageUrl: "https://picsum.photos/seed/alappuzha/500/500" },
+  { name: "Wayanad", imageUrl: "https://picsum.photos/seed/wayanad/500/500" },
+  { name: "Palakkad", imageUrl: "https://picsum.photos/seed/palakkad/500/500" },
+  { name: "Kannur", imageUrl: "https://picsum.photos/seed/kannur/500/500" },
+  { name: "Kottayam", imageUrl: "https://picsum.photos/seed/kottayam/500/500" },
+  
+  // Major Metro Cities
   { name: "Bangalore", imageUrl: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=500&q=80" },
+  { name: "Chennai", imageUrl: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=500&q=80" },
   { name: "Delhi", imageUrl: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=500&q=80" },
-  { name: "Ahmedabad", imageUrl: "https://images.unsplash.com/photo-1605649487212-4f7d4dc9c1de?w=500&q=80" },
-  { name: "Hyderabad", imageUrl: "https://images.unsplash.com/photo-1572508544974-bc4874457e5e?w=500&q=80" },
-  { name: "Pune", imageUrl: "https://images.unsplash.com/photo-1579847188804-aec941f77f24?w=500&q=80" },
-  { name: "Mumbai", imageUrl: "https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=500&q=80" },
-  { name: "Kolkata", imageUrl: "https://images.unsplash.com/photo-1558431382-27e303142255?w=500&q=80" }
 ];
 
 export default function DiscoverCities() {

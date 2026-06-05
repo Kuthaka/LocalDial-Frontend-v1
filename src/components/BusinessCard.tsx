@@ -35,9 +35,9 @@ export default function BusinessCard({
           )}
         </div>
         
-        {/* Follow Button */}
-        <button className="mt-3 ml-auto bg-[#0f1419] text-white text-[15px] font-bold px-5 py-1.5 rounded-full hover:bg-black transition-colors">
-          Follow
+        {/* View Profile Button */}
+        <button className="mt-3 ml-auto bg-[#0f1419] text-white text-[14px] font-bold px-4 py-1.5 rounded-full hover:bg-black transition-colors shadow-sm">
+          View Profile
         </button>
       </div>
 
