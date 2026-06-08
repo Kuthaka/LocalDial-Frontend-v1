@@ -25,17 +25,7 @@ import {
   PhoneCall
 } from 'lucide-react'
 
-// Dummy categories for selection
-const SUGGESTED_CATEGORIES = [
-  'Food Emporiums',
-  'Food Delivery Restaurants',
-  'Foot Massage Spas',
-  'Foot & Ankle Doctors',
-  'Food Allergy Diagnostic Centers',
-  'Foot X Ray Centers',
-  'Foot Wear Dealers',
-  'Food Container Printing Services'
-]
+import { getSystemCategories } from '@/app/actions/categories'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -112,6 +102,16 @@ function BusinessSignupContent() {
   
   // Use local state for immediate step transitions
   const [step, setStep] = useState(isNaN(urlStep) || urlStep < 1 || urlStep > 7 ? 1 : urlStep)
+  const [systemCategories, setSystemCategories] = useState<{ id: string; name: string; tags?: string[] }[]>([])
+
+  // Fetch categories on mount
+  useEffect(() => {
+    async function loadCategories() {
+      const cats = await getSystemCategories()
+      setSystemCategories(cats || [])
+    }
+    loadCategories()
+  }, [])
 
   // Sync to URL silently
   useEffect(() => {
@@ -121,6 +121,7 @@ function BusinessSignupContent() {
   const [loading, setLoading] = useState(false)
   const [showOtpModal, setShowOtpModal] = useState(false)
   const [showTimingConfirmModal, setShowTimingConfirmModal] = useState(false)
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
   
   // Form State using Session Storage
   const [email, setEmail] = useSessionState('business_signup_email', '')
@@ -662,12 +663,16 @@ function BusinessSignupContent() {
               </div>
 
               <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
                 <input
                   placeholder="Search and select categories (e.g. Restaurants)"
                   className="w-full pl-10 pr-10 p-3 border border-[#0a84e3] rounded-lg focus:ring-4 focus:ring-[#104825]/10 focus:border-[#104825] transition-all outline-none shadow-sm"
                   value={categorySearch}
                   onChange={e => setCategorySearch(e.target.value)}
+                  onFocus={() => setShowCategoryDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowCategoryDropdown(false), 200)}
                 />
                 {categorySearch && (
                   <button type="button" onClick={() => setCategorySearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -676,36 +681,53 @@ function BusinessSignupContent() {
                 )}
                 
                 {/* Search Dropdown */}
-                {categorySearch && (
+                {showCategoryDropdown && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
-                    {SUGGESTED_CATEGORIES.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase())).map((cat, idx) => (
+                    {systemCategories.filter(c => {
+                      if (!categorySearch) return true;
+                      const searchStr = categorySearch.toLowerCase()
+                      return c.name.toLowerCase().includes(searchStr) || (c.tags && c.tags.some((t: string) => t.toLowerCase().includes(searchStr)))
+                    }).map((cat, idx) => (
                       <div 
-                        key={idx} 
-                        className="px-4 py-3 hover:bg-slate-50 cursor-pointer text-slate-700 text-sm font-medium border-b last:border-0"
+                        key={cat.id || idx} 
+                        className="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b last:border-0"
                         onClick={() => {
-                          if(!categories.includes(cat)) setCategories([...categories, cat])
+                          if(!categories.includes(cat.name)) setCategories([...categories, cat.name])
                           setCategorySearch('')
                         }}
                       >
-                        {cat}
+                        <div className="text-slate-900 font-medium">{cat.name}</div>
+                        {cat.tags && cat.tags.length > 0 && (
+                          <div className="text-xs text-slate-500 mt-1">Tags: {cat.tags.join(', ')}</div>
+                        )}
                       </div>
                     ))}
+                    
+                    {systemCategories.filter(c => {
+                      if (!categorySearch) return true;
+                      const searchStr = categorySearch.toLowerCase()
+                      return c.name.toLowerCase().includes(searchStr) || (c.tags && c.tags.some((t: string) => t.toLowerCase().includes(searchStr)))
+                    }).length === 0 && (
+                      <div className="px-4 py-3 text-slate-500 text-sm text-center">
+                        No categories found. Try a different keyword.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
               {categories.length > 0 && (
                 <div className="pt-6">
-                  <h4 className="text-sm font-bold text-[#1c2331] mb-3">Suggested Categories based on your selection</h4>
+                  <h4 className="text-sm font-bold text-[#1c2331] mb-3">Suggested Categories</h4>
                   <div className="flex flex-wrap gap-2">
-                    {SUGGESTED_CATEGORIES.slice(0, 5).filter(c => !categories.includes(c)).map((cat, idx) => (
+                    {systemCategories.slice(0, 8).filter(c => !categories.includes(c.name)).map((cat, idx) => (
                       <button
-                        key={idx}
+                        key={cat.id || idx}
                         type="button"
-                        onClick={() => setCategories([...categories, cat])}
+                        onClick={() => setCategories([...categories, cat.name])}
                         className="border border-slate-200 text-slate-600 hover:border-[#0a84e3] hover:text-[#104825] px-3 py-1.5 rounded-full text-sm font-medium transition-colors"
                       >
-                        + {cat}
+                        + {cat.name}
                       </button>
                     ))}
                   </div>
