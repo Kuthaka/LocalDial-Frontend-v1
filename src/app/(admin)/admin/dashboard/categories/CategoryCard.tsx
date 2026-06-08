@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { Edit2, X, Tag, AlignLeft, Info } from 'lucide-react'
 import { editCategory } from '@/app/actions/admin'
 import SubmitButton from './SubmitButton'
+import { CategorySchema } from '@/validations/category'
 
 export default function CategoryCard({ cat }: { cat: any }) {
   const [isEditing, setIsEditing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   if (isEditing) {
     return (
@@ -18,10 +20,30 @@ export default function CategoryCard({ cat }: { cat: any }) {
           </button>
         </div>
         <form action={async (formData) => {
-          await editCategory(formData)
-          setIsEditing(false)
+          const name = formData.get('name') as string
+          const description = formData.get('description') as string
+          
+          const validation = CategorySchema.safeParse({ name, description })
+          if (!validation.success) {
+            setError(validation.error.issues[0].message)
+            return
+          }
+          
+          setError(null)
+          const result = await editCategory(formData)
+          if (result?.error) {
+            setError(result.error)
+          } else {
+            setIsEditing(false)
+          }
         }} className="space-y-4">
           <input type="hidden" name="id" value={cat.id} />
+          
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
+              {error}
+            </div>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">

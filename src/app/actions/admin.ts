@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { CategorySchema } from '@/validations/category'
 
 export async function approveBusiness(userId: string) {
   const supabase = await createClient()
@@ -84,17 +85,29 @@ export async function addCategory(formData: FormData) {
   const description = formData.get('description') as string
   const tagsStr = formData.get('tags') as string
   
-  if (!name) return { error: 'Name is required' }
+  const validation = CategorySchema.safeParse({ name, description })
+  if (!validation.success) {
+    return { error: validation.error.issues[0].message }
+  }
+
+  // Check for duplicates
+  const { data: existing } = await supabase
+    .from('system_categories')
+    .select('id')
+    .ilike('name', name)
+    .single()
+
+  if (existing) {
+    return { error: 'A category with this name already exists' }
+  }
   
   const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : []
 
-  // Assumes a table 'system_categories' exists
   const { error } = await supabase
     .from('system_categories')
     .insert([{ name, description, tags }])
 
   if (error) {
-    // If table doesn't exist, this will gracefully return the error to the UI
     return { error: error.message }
   }
 
@@ -123,7 +136,24 @@ export async function editCategory(formData: FormData) {
   const description = formData.get('description') as string
   const tagsStr = formData.get('tags') as string
   
-  if (!id || !name) return { error: 'ID and Name are required' }
+  if (!id) return { error: 'Category ID is required' }
+  
+  const validation = CategorySchema.safeParse({ name, description })
+  if (!validation.success) {
+    return { error: validation.error.issues[0].message }
+  }
+
+  // Check for duplicates (excluding the current category)
+  const { data: existing } = await supabase
+    .from('system_categories')
+    .select('id')
+    .ilike('name', name)
+    .neq('id', id)
+    .single()
+
+  if (existing) {
+    return { error: 'A category with this name already exists' }
+  }
   
   const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : []
 
