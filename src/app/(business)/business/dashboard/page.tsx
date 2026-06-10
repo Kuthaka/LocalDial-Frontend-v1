@@ -1,21 +1,30 @@
 'use client'
 
 import { useState } from 'react'
-import { Phone, MapPin, Mail, Clock, ShieldCheck, Edit3, Globe, CheckCircle2 } from 'lucide-react'
+import { Phone, MapPin, Mail, Clock, ShieldCheck, Edit3, Globe, CheckCircle2, MessageCircle, Camera, Users, Video } from 'lucide-react'
 import Link from 'next/link'
 
 export default function BusinessDashboardOverview() {
   // Mock data representing details fed from the onboarding process
   const businessDetails = {
     name: 'Cool Breeze Aircon Services',
-    category: 'AC Repair & Services',
+    tagline: 'Your Comfort, Our Priority - Professional AC Solutions',
+    category: 'Home Services',
     location: 'Calicut City, Kerala',
+    established: '2012',
+    gst: '29ABCDE1234F1Z5',
     description: 'We are a leading provider of AC repair and maintenance services in Calicut. With over 10 years of experience, our certified technicians ensure your air conditioning units run efficiently all year round. We handle installations, deep cleaning, gas refilling, and emergency repairs.',
     phone: '+91 98765 43210',
     email: 'contact@coolbreeze.com',
     website: 'www.coolbreeze.com',
+    whatsapp: '+91 98765 43210',
+    instagram: '@coolbreeze_ac',
+    facebook: 'Cool Breeze Aircon',
+    youtube: 'Cool Breeze Channel',
+    parking: 'Free Street Parking, Valet Available',
     hours: 'Mon - Sat: 9:00 AM - 7:00 PM',
     services: ['AC Installation', 'Deep Cleaning', 'Gas Refill', 'Compressor Repair', 'AMC Maintenance'],
+    amenities: ['Air Conditioned', 'Free WiFi', 'Family Friendly', 'Washroom', 'Wheelchair Accessible', 'Emergency Services'],
     images: [
       'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=400&q=80',
@@ -71,11 +80,20 @@ export default function BusinessDashboardOverview() {
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
             <div>
               <h1 className="text-3xl font-black text-[#1c2331] tracking-tight">{businessDetails.name}</h1>
-              <p className="text-slate-500 font-medium mt-2 flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md text-sm">{businessDetails.category}</span>
+              <p className="text-[#104825] font-bold mt-1 text-lg">{businessDetails.tagline}</p>
+              <div className="flex flex-wrap items-center gap-2 mt-3 text-sm text-slate-600 font-medium">
+                <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md">{businessDetails.category}</span>
                 • 
                 <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {businessDetails.location}</span>
-              </p>
+                • 
+                <span>Est. {businessDetails.established}</span>
+                {businessDetails.gst && (
+                  <>
+                    • 
+                    <span className="text-slate-500">GST: {businessDetails.gst}</span>
+                  </>
+                )}
+              </div>
             </div>
             <Link href="/business/dashboard/profile" className="px-5 py-2.5 bg-slate-100 text-[#1c2331] hover:bg-slate-200 font-bold rounded-xl transition-colors flex items-center gap-2 flex-shrink-0">
               <Edit3 className="w-4 h-4" /> Edit Profile
@@ -155,14 +173,7 @@ export default function BusinessDashboardOverview() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {[
-              'Accepts Credit Cards',
-              'Free Wi-Fi',
-              'Wheelchair Accessible',
-              'Home Service Available',
-              'Parking Available',
-              'Emergency Services'
-            ].map((feature, idx) => (
+            {businessDetails.amenities.map((feature, idx) => (
               <div key={idx} className="flex items-center gap-2 text-slate-700 text-sm font-medium bg-slate-50 p-3 rounded-xl">
                 <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
                 <span className="truncate">{feature}</span>
@@ -170,11 +181,34 @@ export default function BusinessDashboardOverview() {
             ))}
           </div>
 
+          <div className="mt-6 pt-6 border-t border-slate-100">
+            <h4 className="font-bold text-[#1c2331] mb-2 text-sm text-slate-500">Parking Information</h4>
+            <p className="text-sm font-bold text-slate-700">{businessDetails.parking}</p>
+          </div>
+
           <div className="mt-8 pt-6 border-t border-slate-100">
-            <h4 className="font-bold text-[#1c2331] mb-4">Web Presence</h4>
-            <div className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
-              <Globe className="w-4 h-4 text-slate-400" />
-              <span className="font-medium text-[#104825] hover:underline">{businessDetails.website}</span>
+            <h4 className="font-bold text-[#1c2331] mb-4">Web & Social Presence</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
+                <Globe className="w-4 h-4 text-slate-400" />
+                <span className="font-medium text-[#104825] hover:underline truncate">{businessDetails.website}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
+                <MessageCircle className="w-4 h-4 text-green-500" />
+                <span className="font-medium text-[#104825] hover:underline truncate">{businessDetails.whatsapp}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
+                <Camera className="w-4 h-4 text-pink-500" />
+                <span className="font-medium text-[#104825] hover:underline truncate">{businessDetails.instagram}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
+                <Users className="w-4 h-4 text-blue-600" />
+                <span className="font-medium text-[#104825] hover:underline truncate">{businessDetails.facebook}</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors sm:col-span-2">
+                <Video className="w-4 h-4 text-red-600" />
+                <span className="font-medium text-[#104825] hover:underline truncate">{businessDetails.youtube}</span>
+              </div>
             </div>
           </div>
         </div>
