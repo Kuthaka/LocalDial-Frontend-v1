@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Plus, Camera, MapPin, Globe, Share2, Info, Building2, CheckCircle2, X } from 'lucide-react'
-import { updateBusinessProfile } from '@/app/actions/businessProfile'
+import { Plus, Camera, MapPin, Globe, Share2, Info, Building2, CheckCircle2, X, Loader2 } from 'lucide-react'
+import { updateBusinessProfile, checkUsernameAvailability } from '@/app/actions/businessProfile'
 import ImageCropperModal from '@/components/ImageCropperModal'
 import toast, { Toaster } from 'react-hot-toast'
 
@@ -11,6 +11,32 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [tags, setTags] = useState<string[]>(initialData?.sub_categories || [])
   const [tagInput, setTagInput] = useState('')
+
+  // Username validation state
+  const [username, setUsername] = useState(initialData?.username || '')
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    if (!username) {
+      setUsernameAvailable(null)
+      return
+    }
+
+    if (username === initialData?.username) {
+      setUsernameAvailable(true)
+      return
+    }
+
+    const delayDebounceFn = setTimeout(async () => {
+      setIsCheckingUsername(true)
+      const res = await checkUsernameAvailability(username, initialData?.id || null)
+      setUsernameAvailable(res.available)
+      setIsCheckingUsername(false)
+    }, 600)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [username, initialData?.username, initialData?.id])
 
   // Media states
   const [logoPreview, setLogoPreview] = useState<string | null>(initialData?.logo_url || null)
@@ -141,11 +167,22 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setIsPending(true)
-    
-    const loadingToast = toast.loading('Uploading images & saving changes. Please wait...')
-    
+
     const formData = new FormData(e.currentTarget)
+    const formUsername = formData.get('username') as string
+
+    if (!formUsername) {
+      toast.error('Username is required.')
+      return
+    }
+
+    if (usernameAvailable === false) {
+      toast.error('Please choose an available username before saving.')
+      return
+    }
+
+    setIsPending(true)
+    const loadingToast = toast.loading('Uploading images & saving changes. Please wait...')
     
     // Add tags explicitly before passing to action
     formData.set('subCategories', tags.join(','))
@@ -204,9 +241,38 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
               <h3 className="text-lg font-bold text-[#1c2331]">Basic Information</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
+              <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Business Name</label>
                 <input type="text" name="name" defaultValue={initialData?.name || ''} required className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Business Username</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">@</span>
+                  <input 
+                    type="text" 
+                    name="username" 
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())}
+                    required 
+                    placeholder="your_business"
+                    className={`w-full pl-8 pr-10 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50 ${
+                      usernameAvailable === false ? 'border-red-500' : 
+                      usernameAvailable === true ? 'border-green-500' : 'border-slate-200'
+                    }`}
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    {isCheckingUsername && <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />}
+                    {!isCheckingUsername && usernameAvailable === true && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                    {!isCheckingUsername && usernameAvailable === false && <X className="w-4 h-4 text-red-500" />}
+                  </div>
+                </div>
+                {usernameAvailable === false && (
+                  <p className="text-red-500 text-xs font-bold mt-1.5">Username is already taken.</p>
+                )}
+                {usernameAvailable === true && username !== initialData?.username && (
+                  <p className="text-green-600 text-xs font-bold mt-1.5">Username is available!</p>
+                )}
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-bold text-slate-700 mb-2">Tagline</label>

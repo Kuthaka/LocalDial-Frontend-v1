@@ -3,6 +3,28 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+export async function checkUsernameAvailability(username: string, currentUserId: string | null = null) {
+  const supabase = await createClient()
+  
+  let query = supabase
+    .from('business_profiles')
+    .select('id')
+    .eq('username', username)
+    
+  if (currentUserId) {
+    query = query.neq('id', currentUserId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error checking username:', error)
+    return { available: false, error: 'Database error' }
+  }
+
+  return { available: data.length === 0 }
+}
+
 export async function getBusinessProfile() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -71,11 +93,20 @@ export async function updateBusinessProfile(formData: FormData) {
 
   // Extract basic fields
   const name = formData.get('name') as string
+  const username = formData.get('username') as string
   const description = formData.get('description') as string
   const tagline = formData.get('tagline') as string
   const established_year = formData.get('established_year') as string
   const gst_number = formData.get('gst_number') as string
   
+  // Validate username availability securely on server before saving
+  if (username) {
+    const isAvailable = await checkUsernameAvailability(username, user.id);
+    if (!isAvailable.available) {
+      return { error: 'Username is already taken. Please choose another one.' }
+    }
+  }
+
   // Categories
   const category = formData.get('category') as string
   const subCategories = (formData.get('subCategories') as string)?.split(',').map(s => s.trim()).filter(Boolean) || []
@@ -120,6 +151,7 @@ export async function updateBusinessProfile(formData: FormData) {
   // Build the update payload
   const updatePayload: any = {
     name,
+    username,
     description,
     tagline,
     established_year,

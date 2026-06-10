@@ -8,6 +8,7 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
   // Use real data from backend, fallback to safe defaults if missing
   const businessDetails = {
     name: profileData?.name || 'Your Business Name',
+    username: profileData?.username || null,
     tagline: profileData?.tagline || 'Add a tagline in profile edit',
     category: profileData?.primary_category || 'Uncategorized',
     location: profileData?.address_text || 'Location not set',
@@ -59,8 +60,13 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
               />
             </div>
             <div className="text-white pb-1">
-              <h1 className="text-2xl sm:text-4xl font-black tracking-tight drop-shadow-md">{businessDetails.name}</h1>
-              {businessDetails.tagline && <p className="font-bold text-slate-200 mt-1 sm:text-lg drop-shadow">{businessDetails.tagline}</p>}
+              <h1 className="text-2xl sm:text-4xl font-black tracking-tight drop-shadow-md flex items-center gap-3">
+                {businessDetails.name}
+              </h1>
+              {businessDetails.username && (
+                <p className="font-bold text-green-400 mt-0.5 sm:text-lg drop-shadow">@{businessDetails.username}</p>
+              )}
+              {businessDetails.tagline && <p className="font-medium text-slate-200 mt-1 sm:text-base drop-shadow">{businessDetails.tagline}</p>}
             </div>
           </div>
           <Link href="/business/dashboard/profile" className="px-5 py-2.5 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 flex-shrink-0 border border-white/20 shadow-lg">

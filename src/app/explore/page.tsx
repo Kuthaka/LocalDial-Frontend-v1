@@ -6,6 +6,8 @@ export const metadata = {
   title: 'Explore Businesses | LocalDial',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function ExplorePage() {
   const supabase = await createClient()
 
@@ -16,11 +18,11 @@ export default async function ExplorePage() {
     .order('created_at', { ascending: false })
 
   const allCards = (businesses || []).map(business => ({
-    href: `/explore/${business.id}`,
+    href: `/business/${business.username || business.id}`,
     coverImage: business.cover_url || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
     logoImage: business.logo_url,
     name: business.name || 'Unnamed Business',
-    handle: business.tagline ? business.tagline.replace(/\s+/g, '').toLowerCase() : business.id.slice(0, 8),
+    handle: business.username || (business.tagline ? business.tagline.replace(/\s+/g, '').toLowerCase() : business.id.slice(0, 8)),
     description: business.description || business.tagline || 'No description available.',
     verified: business.is_verified !== false,
   }))
