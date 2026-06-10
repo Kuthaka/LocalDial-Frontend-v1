@@ -1,5 +1,6 @@
 import BusinessCard from './BusinessCard';
 import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface PopularSectionProps {
   title: string;
@@ -18,7 +19,13 @@ export default function PopularSection({ title, businesses }: PopularSectionProp
       
       <div className="flex gap-4 md:gap-5 overflow-x-auto pb-6 pt-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {businesses.map((biz, i) => (
-          <BusinessCard key={i} {...biz} />
+          biz.href ? (
+            <Link href={biz.href} key={i} className="block hover:scale-[1.02] transition-transform duration-300">
+              <BusinessCard {...biz} />
+            </Link>
+          ) : (
+            <BusinessCard key={i} {...biz} />
+          )
         ))}
       </div>
     </div>
