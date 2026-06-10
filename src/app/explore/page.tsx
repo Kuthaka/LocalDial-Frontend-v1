@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { MapPin, Search } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 
 export const metadata = {
   title: 'Explore Businesses | LocalDial',
@@ -17,26 +17,9 @@ export default async function ExplorePage() {
 
   return (
     <div className="w-full pb-20">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 py-6 px-4 md:px-8 shadow-sm">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-[#1c2331] tracking-tight">Explore Local Businesses</h1>
-            <p className="text-slate-500 mt-1">Discover top-rated services and businesses in your area</p>
-          </div>
-          <div className="relative">
-            <Search className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text" 
-              placeholder="Search for businesses..." 
-              className="w-full md:w-80 pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#104825] outline-none"
-            />
-          </div>
-        </div>
-      </header>
-
       {/* Grid */}
-      <main className="max-w-6xl mx-auto py-12 px-4 md:px-8">
+      <main className="max-w-6xl mx-auto py-8 px-4 md:px-8">
+        <h1 className="text-3xl md:text-4xl font-black text-[#1c2331] tracking-tight mb-8">Explore Everything</h1>
         {!businesses || businesses.length === 0 ? (
           <div className="text-center py-20">
             <h3 className="text-xl font-bold text-slate-400">No businesses found yet.</h3>
