@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, Info, Mail, Map, ArrowUpRight } from "lucide-react";
+import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, Info, Mail, Map, ArrowUpRight, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LocationModal from "./LocationModal";
@@ -74,6 +74,9 @@ export default function Navbar() {
             <Link href="/explore" className="font-bold text-slate-800 hover:text-[#F4AE52] transition-colors">
               Explore
             </Link>
+            <Link href="/categories" className="font-bold text-slate-800 hover:text-[#F4AE52] transition-colors">
+              Categories
+            </Link>
           </div>
         </div>
 
@@ -129,12 +132,15 @@ export default function Navbar() {
                 List Your Business (FREE)
               </Link>
               <div className="h-px bg-slate-100 w-full my-1"></div>
-              <Link href="/explore" onClick={() => setIsMobileMenuOpen(false)} className="text-[#104825] font-black hover:text-[#F4AE52] transition-colors py-1">Explore All Businesses</Link>
-              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Home Services</Link>
-              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Education</Link>
-              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Beauty & Spa</Link>
-              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Healthcare</Link>
-              <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Restaurants</Link>
+              <Link href="/explore" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-slate-800 font-bold p-3 hover:bg-slate-50 rounded-lg">
+                <Globe className="w-5 h-5 text-slate-400" /> Explore All Businesses
+              </Link>
+              <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-slate-800 font-bold p-3 hover:bg-slate-50 rounded-lg">
+                <List className="w-5 h-5 text-slate-400" /> Categories
+              </Link>
+              <Link href="/business/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-slate-800 font-bold p-3 hover:bg-slate-50 rounded-lg">
+                <User className="w-5 h-5 text-slate-400" /> Login / Dashboard
+              </Link>
             </div>
           </motion.div>
         )}
