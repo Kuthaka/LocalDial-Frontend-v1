@@ -25,6 +25,8 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
     hours: 'Mon - Sat: 9:00 AM - 7:00 PM', // Needs hours implementation
     services: profileData?.sub_categories || [],
     amenities: profileData?.amenities || [],
+    cover: profileData?.cover_url || '',
+    logo: profileData?.logo_url || '',
     images: profileData?.gallery_images?.length > 0 
       ? profileData.gallery_images 
       : ['https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=80']
@@ -34,6 +36,34 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
 
   return (
     <div className="space-y-8">
+      {/* Cover Banner & Logo Section */}
+      <div className="relative w-full h-48 sm:h-64 lg:h-80 rounded-3xl overflow-hidden shadow-sm">
+        <img 
+          src={businessDetails.cover || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80'} 
+          alt="Cover Banner" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+        <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 justify-between">
+          <div className="flex items-end gap-4 sm:gap-6">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl border-4 border-white overflow-hidden bg-white shadow-xl flex-shrink-0">
+              <img 
+                src={businessDetails.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(businessDetails.name)}&background=104825&color=fff&size=256`} 
+                alt={`${businessDetails.name} Logo`} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-white pb-1">
+              <h1 className="text-2xl sm:text-4xl font-black tracking-tight drop-shadow-md">{businessDetails.name}</h1>
+              {businessDetails.tagline && <p className="font-bold text-slate-200 mt-1 sm:text-lg drop-shadow">{businessDetails.tagline}</p>}
+            </div>
+          </div>
+          <Link href="/business/dashboard/profile" className="px-5 py-2.5 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 flex-shrink-0 border border-white/20 shadow-lg">
+            <Edit3 className="w-4 h-4" /> Edit Profile
+          </Link>
+        </div>
+      </div>
+
       {/* Top Section: Gallery Left, Info Right */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
@@ -71,23 +101,16 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
         {/* Right Side: Business Data & Info */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-8 flex flex-col">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
-            <div>
-              <h1 className="text-3xl font-black text-[#1c2331] tracking-tight">{businessDetails.name}</h1>
-              {businessDetails.tagline && <p className="text-[#104825] font-bold mt-1 text-lg">{businessDetails.tagline}</p>}
-              <div className="flex flex-wrap items-center gap-2 mt-3 text-sm text-slate-600 font-medium">
-                <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md">{businessDetails.category}</span>
-                • 
-                <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {businessDetails.location}</span>
-                • 
-                <span>Est. {businessDetails.established}</span>
-                {businessDetails.gst && (
-                  <>• <span className="text-slate-500">GST: {businessDetails.gst}</span></>
-                )}
-              </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600 font-medium w-full">
+              <span className="px-3 py-1.5 bg-[#104825]/10 text-[#104825] font-bold rounded-lg">{businessDetails.category}</span>
+              • 
+              <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {businessDetails.location}</span>
+              • 
+              <span>Est. {businessDetails.established}</span>
+              {businessDetails.gst && (
+                <>• <span className="text-slate-500">GST: {businessDetails.gst}</span></>
+              )}
             </div>
-            <Link href="/business/dashboard/profile" className="px-5 py-2.5 bg-slate-100 text-[#1c2331] hover:bg-slate-200 font-bold rounded-xl transition-colors flex items-center gap-2 flex-shrink-0">
-              <Edit3 className="w-4 h-4" /> Edit Profile
-            </Link>
           </div>
 
           <div className="flex-1 space-y-6">

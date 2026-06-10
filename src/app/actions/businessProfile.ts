@@ -31,6 +31,44 @@ export async function updateBusinessProfile(formData: FormData) {
     return { error: 'Unauthorized' }
   }
 
+  // Helper to upload a file to Cloudinary
+  async function uploadMedia(file: File | null, pathPrefix: string): Promise<string | null> {
+    if (!file) return null;
+    
+    const cloudName = process.env.CLOUDINARY_NAME;
+    const uploadPreset = process.env.UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      console.error('Missing Cloudinary environment variables');
+      return null;
+    }
+
+    try {
+      const cloudinaryFormData = new FormData();
+      cloudinaryFormData.append('file', file);
+      cloudinaryFormData.append('upload_preset', uploadPreset);
+      // Optional: add a specific folder or public_id based on user.id
+      cloudinaryFormData.append('folder', `nearbydirect/business_${user!.id}`);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: cloudinaryFormData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error('Cloudinary Upload Error:', data);
+        return null;
+      }
+
+      return data.secure_url; // Returns the public Cloudinary URL
+    } catch (error) {
+      console.error('Failed to upload to Cloudinary:', error);
+      return null;
+    }
+  }
+
   // Extract basic fields
   const name = formData.get('name') as string
   const description = formData.get('description') as string
@@ -52,7 +90,7 @@ export async function updateBusinessProfile(formData: FormData) {
   
   // Amenities & Parking
   const parking_info = formData.get('parking_info') as string
-  const amenities = formData.getAll('amenities') as string[] // Checkboxes
+  const amenities = formData.getAll('amenities') as string[]
 
   // Socials
   const website_url = formData.get('website_url') as string
@@ -61,39 +99,71 @@ export async function updateBusinessProfile(formData: FormData) {
   const facebook_url = formData.get('facebook_url') as string
   const youtube_url = formData.get('youtube_url') as string
 
-  // Note: Logo, Cover, and Gallery uploads usually happen via Supabase Storage.
-  // For this action, we'll assume they pass URLs or we just handle text fields.
+  // Handle Images
+  const logoFile = formData.get('logoFile') as File | null;
+  const coverFile = formData.get('coverFile') as File | null;
+  const newGalleryFiles = formData.getAll('newGalleryFiles') as File[];
+  const existingGallery = JSON.parse((formData.get('existingGallery') as string) || '[]');
 
-  const { error } = await supabase
+  const logo_url = await uploadMedia(logoFile, 'logo');
+  const cover_url = await uploadMedia(coverFile, 'cover');
+
+  // Upload new gallery files
+  const newlyUploadedGalleryUrls: string[] = [];
+  for (let i = 0; i < newGalleryFiles.length; i++) {
+    const url = await uploadMedia(newGalleryFiles[i], `gallery_${i}`);
+    if (url) newlyUploadedGalleryUrls.push(url);
+  }
+
+  const finalGallery = [...existingGallery, ...newlyUploadedGalleryUrls];
+
+  // Build the update payload
+  const updatePayload: any = {
+    name,
+    description,
+    tagline,
+    established_year,
+    gst_number,
+    address_text: fullAddress,
+    latitude,
+    longitude,
+    google_maps_url,
+    parking_info,
+    amenities,
+    website_url,
+    whatsapp_number,
+    instagram_url,
+    facebook_url,
+    youtube_url,
+    primary_category: category,
+    sub_categories: subCategories,
+    primary_phone: phone,
+    primary_email: email,
+    gallery_images: finalGallery
+  };
+
+  if (logo_url) updatePayload.logo_url = logo_url;
+  if (cover_url) updatePayload.cover_url = cover_url;
+
+  // Use upsert to create the row if it doesn't exist for this user,
+  // or update it if it does. This fixes the issue if the row was accidentally missing.
+  const { data: updatedData, error } = await supabase
     .from('business_profiles')
-    .update({
-      name,
-      description,
-      tagline,
-      established_year,
-      gst_number,
-      address_text: fullAddress,
-      latitude,
-      longitude,
-      google_maps_url,
-      parking_info,
-      amenities, // Assuming Postgres array
-      website_url,
-      whatsapp_number,
-      instagram_url,
-      facebook_url,
-      youtube_url,
-      primary_category: category,
-      sub_categories: subCategories, // Assuming Postgres array
-      primary_phone: phone,
-      primary_email: email
+    .upsert({ 
+      id: user.id, 
+      ...updatePayload 
     })
-    .eq('id', user.id)
+    .select(); // Select to ensure it returns the modified row
 
   if (error) {
     return { error: error.message }
   }
 
+  if (!updatedData || updatedData.length === 0) {
+    return { error: "Database rejected the save. Please check Supabase Row Level Security (RLS) policies for 'business_profiles' table. You must have INSERT/UPDATE policies if RLS is enabled." }
+  }
+
   revalidatePath('/business/dashboard', 'layout')
+  revalidatePath('/business/dashboard/profile', 'page')
   return { success: true }
 }

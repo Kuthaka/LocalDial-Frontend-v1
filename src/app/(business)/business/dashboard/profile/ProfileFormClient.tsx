@@ -1,14 +1,71 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Plus, Camera, MapPin, Globe, Share2, Info, Building2, CheckCircle2, X } from 'lucide-react'
 import { updateBusinessProfile } from '@/app/actions/businessProfile'
+import ImageCropperModal from '@/components/ImageCropperModal'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function ProfileFormClient({ initialData, categoriesList }: { initialData: any, categoriesList: any[] }) {
   const [isPending, setIsPending] = useState(false)
-  const [message, setMessage] = useState('')
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [tags, setTags] = useState<string[]>(initialData?.sub_categories || [])
   const [tagInput, setTagInput] = useState('')
+
+  // Media states
+  const [logoPreview, setLogoPreview] = useState<string | null>(initialData?.logo_url || null)
+  const [coverPreview, setCoverPreview] = useState<string | null>(initialData?.cover_url || null)
+  
+  // Real File states for Logo and Cover (to submit cropped files)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [coverFile, setCoverFile] = useState<File | null>(null)
+  
+  // Gallery states
+  const [existingGallery, setExistingGallery] = useState<string[]>(initialData?.gallery_images || [])
+  const [newGalleryFiles, setNewGalleryFiles] = useState<File[]>([])
+
+  const logoRef = useRef<HTMLInputElement>(null)
+  const coverRef = useRef<HTMLInputElement>(null)
+  const galleryRef = useRef<HTMLInputElement>(null)
+
+  // Cropper Queue state
+  interface CropItem { file: File, target: 'logo' | 'cover' | 'gallery' }
+  const [cropQueue, setCropQueue] = useState<CropItem[]>([])
+  const [activeCropSrc, setActiveCropSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (cropQueue.length > 0 && cropQueue[0]?.file instanceof Blob) {
+      try {
+        const url = URL.createObjectURL(cropQueue[0].file)
+        setActiveCropSrc(url)
+        return () => URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error("Error creating object URL:", error)
+        setActiveCropSrc(null)
+      }
+    } else {
+      setActiveCropSrc(null)
+    }
+  }, [cropQueue])
+
+  const handleCropComplete = (croppedFile: File) => {
+    const currentTarget = cropQueue[0].target
+    if (currentTarget === 'logo') {
+      setLogoFile(croppedFile)
+      setLogoPreview(URL.createObjectURL(croppedFile))
+    } else if (currentTarget === 'cover') {
+      setCoverFile(croppedFile)
+      setCoverPreview(URL.createObjectURL(croppedFile))
+    } else if (currentTarget === 'gallery') {
+      setNewGalleryFiles(prev => [...prev, croppedFile])
+    }
+    // move to next item
+    setCropQueue(prev => prev.slice(1))
+  }
+
+  const handleCropCancel = () => {
+    setCropQueue(prev => prev.slice(1))
+  }
 
   const ALL_AMENITIES = [
     'Air Conditioned', 'Free WiFi', 'Family Friendly', 'Washroom', 
@@ -45,19 +102,72 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
     setTags(tags.filter(tag => tag !== tagToRemove))
   }
 
-  async function handleSubmit(formData: FormData) {
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setCropQueue(prev => [...prev, { file, target: 'logo' }])
+    }
+    if (logoRef.current) logoRef.current.value = ''
+  }
+
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setCropQueue(prev => [...prev, { file, target: 'cover' }])
+    }
+    if (coverRef.current) coverRef.current.value = ''
+  }
+
+  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files)
+      if (existingGallery.length + newGalleryFiles.length + cropQueue.filter(q => q.target === 'gallery').length + filesArray.length > 10) {
+        alert('You can only upload up to 10 gallery photos.')
+        if (galleryRef.current) galleryRef.current.value = ''
+        return
+      }
+      setCropQueue(prev => [...prev, ...filesArray.map(f => ({ file: f, target: 'gallery' as const }))])
+    }
+    if (galleryRef.current) galleryRef.current.value = ''
+  }
+
+  const removeExistingGalleryImage = (index: number) => {
+    setExistingGallery(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const removeNewGalleryImage = (index: number) => {
+    setNewGalleryFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
     setIsPending(true)
-    setMessage('')
+    
+    const loadingToast = toast.loading('Uploading images & saving changes. Please wait...')
+    
+    const formData = new FormData(e.currentTarget)
     
     // Add tags explicitly before passing to action
     formData.set('subCategories', tags.join(','))
+
+    // Add gallery state manually to formData
+    formData.set('existingGallery', JSON.stringify(existingGallery))
+    
+    // Append actual files
+    if (logoFile) formData.set('logoFile', logoFile)
+    if (coverFile) formData.set('coverFile', coverFile)
+    
+    newGalleryFiles.forEach(file => {
+      formData.append('newGalleryFiles', file)
+    })
     
     const result = await updateBusinessProfile(formData)
     
     if (result.error) {
-      setMessage(`Error: ${result.error}`)
+      toast.error(result.error, { id: loadingToast, duration: 6000 })
     } else {
-      setMessage('Profile updated successfully!')
+      toast.success('Changes saved successfully!', { id: loadingToast })
+      setShowSuccessModal(true)
     }
     
     setIsPending(false)
@@ -71,18 +181,15 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
   }
 
   return (
-    <form action={handleSubmit} onKeyDown={handleKeyDown} className="space-y-8">
+    <>
+      <Toaster position="top-center" />
+      <form onSubmit={onSubmit} onKeyDown={handleKeyDown} className="space-y-8">
       {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-black text-[#1c2331]">Edit Business Profile</h2>
           <p className="text-slate-500 mt-1">Complete your profile to stand out and attract more customers.</p>
         </div>
-        {message && (
-          <div className={`px-4 py-2 rounded-lg font-bold text-sm ${message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-            {message}
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -264,8 +371,18 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
             </div>
           </div>
 
-          <button disabled={isPending} type="submit" className="w-full py-4 bg-[#104825] text-white text-lg font-black rounded-xl hover:bg-[#0c361c] transition-all shadow-xl hover:shadow-[#104825]/30 disabled:opacity-50">
-            {isPending ? 'Saving...' : 'Save All Changes'}
+          <button disabled={isPending} type="submit" className="w-full py-4 bg-[#104825] text-white text-lg font-black rounded-xl hover:bg-[#0c361c] transition-all shadow-xl hover:shadow-[#104825]/30 disabled:opacity-70 flex items-center justify-center gap-3">
+            {isPending ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Saving Changes...
+              </>
+            ) : (
+              'Save All Changes'
+            )}
           </button>
         </div>
 
@@ -274,12 +391,25 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sticky top-[104px]">
             <h3 className="text-lg font-bold text-[#1c2331] mb-6 border-b border-slate-100 pb-4">Brand Identity</h3>
             
+            {/* Hidden Inputs */}
+            <input type="file" name="logoFile" accept="image/*" hidden ref={logoRef} onChange={handleLogoChange} />
+            <input type="file" name="coverFile" accept="image/*" hidden ref={coverRef} onChange={handleCoverChange} />
+            <input type="file" accept="image/*" multiple hidden ref={galleryRef} onChange={handleGalleryChange} />
+
             {/* Logo Upload */}
             <div className="mb-6">
               <label className="block text-sm font-bold text-slate-700 mb-3">Business Logo</label>
-              <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-[#104825] hover:bg-[#104825]/5 transition-colors mx-auto overflow-hidden relative">
-                {initialData?.logo_url ? (
-                  <img src={initialData.logo_url} alt="Logo" className="w-full h-full object-cover" />
+              <div 
+                onClick={() => logoRef.current?.click()}
+                className="w-32 h-32 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-[#104825] hover:bg-[#104825]/5 transition-colors mx-auto overflow-hidden relative group"
+              >
+                {logoPreview ? (
+                  <>
+                    <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Camera className="w-8 h-8 text-white" />
+                    </div>
+                  </>
                 ) : (
                   <>
                     <Camera className="w-8 h-8 text-slate-400 mb-2" />
@@ -292,9 +422,17 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
             {/* Cover Banner */}
             <div className="mb-6">
               <label className="block text-sm font-bold text-slate-700 mb-3">Cover Banner</label>
-              <div className="w-full h-32 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-[#104825] hover:bg-[#104825]/5 transition-colors overflow-hidden relative">
-                {initialData?.cover_url ? (
-                  <img src={initialData.cover_url} alt="Cover" className="w-full h-full object-cover" />
+              <div 
+                onClick={() => coverRef.current?.click()}
+                className="w-full h-32 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-[#104825] hover:bg-[#104825]/5 transition-colors overflow-hidden relative group"
+              >
+                {coverPreview ? (
+                  <>
+                    <img src={coverPreview} alt="Cover" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Camera className="w-8 h-8 text-white" />
+                    </div>
+                  </>
                 ) : (
                   <>
                     <Camera className="w-8 h-8 text-slate-400 mb-2" />
@@ -308,15 +446,47 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
             <div>
               <div className="flex justify-between items-center mb-3">
                 <label className="block text-sm font-bold text-slate-700">Gallery Photos</label>
-                <span className="text-xs font-bold text-[#104825] bg-green-50 px-2 py-1 rounded-md">Max 10</span>
+                <span className="text-xs font-bold text-[#104825] bg-green-50 px-2 py-1 rounded-md">
+                  {existingGallery.length + newGalleryFiles.length} / 10
+                </span>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                <div className="aspect-square bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-[#104825] hover:bg-[#104825]/5 transition-colors">
-                  <Plus className="w-6 h-6 text-slate-400" />
-                </div>
-                {(initialData?.gallery_images || []).map((img: string, i: number) => (
-                  <div key={i} className="aspect-square bg-slate-200 rounded-xl border border-slate-200 relative group overflow-hidden">
-                    <img src={img} alt="gallery" className="w-full h-full object-cover" />
+                {/* Add Photo Button */}
+                {(existingGallery.length + newGalleryFiles.length) < 10 && (
+                  <div 
+                    onClick={() => galleryRef.current?.click()}
+                    className="aspect-square bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-[#104825] hover:bg-[#104825]/5 transition-colors"
+                  >
+                    <Plus className="w-6 h-6 text-slate-400" />
+                  </div>
+                )}
+                
+                {/* Existing Gallery Images */}
+                {existingGallery.map((imgUrl, i) => (
+                  <div key={`ext-${i}`} className="aspect-square bg-slate-200 rounded-xl border border-slate-200 relative group overflow-hidden">
+                    <img src={imgUrl} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
+                    <button 
+                      type="button" 
+                      onClick={() => removeExistingGalleryImage(i)}
+                      className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* New Gallery Previews */}
+                {newGalleryFiles.map((file, i) => (
+                  <div key={`new-${i}`} className="aspect-square bg-slate-200 rounded-xl border border-slate-200 relative group overflow-hidden">
+                    <img src={URL.createObjectURL(file)} alt={`New Gallery ${i}`} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 border-2 border-green-500 rounded-xl pointer-events-none"></div>
+                    <button 
+                      type="button" 
+                      onClick={() => removeNewGalleryImage(i)}
+                      className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 pointer-events-auto"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -325,6 +495,47 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
         </div>
 
       </div>
+      {/* Image Cropper Modal */}
+      {cropQueue.length > 0 && activeCropSrc && (
+        <ImageCropperModal
+          isOpen={true}
+          onClose={handleCropCancel}
+          imageSrc={activeCropSrc}
+          aspect={cropQueue[0].target === 'cover' ? 21 / 9 : 1}
+          onCropComplete={handleCropComplete}
+        />
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white max-w-md w-full rounded-3xl p-8 flex flex-col items-center text-center shadow-2xl transform scale-100 animate-in fade-in zoom-in duration-200">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+              <CheckCircle2 className="w-10 h-10 text-green-600" />
+            </div>
+            <h3 className="text-2xl font-black text-[#1c2331] mb-2">Changes Saved!</h3>
+            <p className="text-slate-500 mb-8 leading-relaxed">
+              Your business profile has been successfully updated. These changes are now live on your profile overview.
+            </p>
+            <div className="w-full flex flex-col sm:flex-row gap-3">
+              <button 
+                type="button"
+                onClick={() => setShowSuccessModal(false)}
+                className="flex-1 px-6 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Keep Editing
+              </button>
+              <a 
+                href="/business/dashboard"
+                className="flex-1 px-6 py-3 bg-[#104825] text-white font-bold rounded-xl hover:bg-[#0c361c] transition-colors shadow-lg hover:shadow-[#104825]/30 text-center flex items-center justify-center"
+              >
+                View Profile
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
+    </>
   )
 }
