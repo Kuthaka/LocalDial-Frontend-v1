@@ -116,12 +116,14 @@ export default function DashboardLayoutClient({ children, profile }: { children:
         {/* Main Content */}
         <main className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col min-h-[calc(100vh-9.5rem)] w-full overflow-hidden">
           {/* Dynamic Content Area Header */}
-          <div className="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
-            <h2 className="text-2xl font-black text-[#1c2331]">
-              {activeLabel}
-            </h2>
-          </div>
-          <div className="p-8 flex-1 overflow-y-auto pb-24 md:pb-8">
+          {pathname !== '/business/dashboard' && (
+            <div className="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+              <h2 className="text-2xl font-black text-[#1c2331]">
+                {activeLabel}
+              </h2>
+            </div>
+          )}
+          <div className={`flex-1 overflow-y-auto pb-24 md:pb-8 ${pathname === '/business/dashboard' ? '' : 'p-8'}`}>
             {children}
           </div>
         </main>

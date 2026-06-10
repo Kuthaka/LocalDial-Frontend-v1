@@ -35,16 +35,21 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
   const [mainImage, setMainImage] = useState(businessDetails.images[0])
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col h-full">
       {/* Cover Banner & Logo Section */}
-      <div className="relative w-full h-48 sm:h-64 lg:h-80 rounded-3xl overflow-hidden shadow-sm">
+      <div className="relative w-full h-48 sm:h-64 lg:h-80 shadow-sm flex-shrink-0">
         <img 
           src={businessDetails.cover || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80'} 
           alt="Cover Banner" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 justify-between">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+        
+        <div className="absolute top-6 left-8">
+          <h2 className="text-2xl font-black text-white drop-shadow-md">Overview</h2>
+        </div>
+
+        <div className="absolute bottom-6 left-8 right-8 flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 justify-between">
           <div className="flex items-end gap-4 sm:gap-6">
             <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl border-4 border-white overflow-hidden bg-white shadow-xl flex-shrink-0">
               <img 
@@ -64,24 +69,26 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
         </div>
       </div>
 
-      {/* Top Section: Gallery Left, Info Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="p-8 space-y-8">
+        {/* Top Section: Gallery Left, Info Right */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
         
         {/* Left Side: Images Gallery */}
-        <div className="space-y-4">
-          <div className="aspect-video relative rounded-2xl overflow-hidden shadow-sm group border border-slate-100">
+        <div className="flex flex-col gap-4">
+          <div className="aspect-square relative rounded-2xl overflow-hidden shadow-sm group border border-slate-100 w-full">
             <img 
               src={mainImage} 
               alt="Main business photo" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5">
+            <div className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 z-10">
               <ShieldCheck className="w-4 h-4" /> Verified Listing
             </div>
           </div>
 
           {businessDetails.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 shrink-0">
               {businessDetails.images.map((img: string, idx: number) => (
                 <div 
                   key={idx} 
@@ -233,6 +240,7 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
               )}
             </div>
           </div>
+        </div>
         </div>
 
       </div>
