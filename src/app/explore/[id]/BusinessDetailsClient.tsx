@@ -21,8 +21,8 @@ export default function BusinessDetailsClient({ business }: { business: any }) {
   const [mainImage, setMainImage] = useState(images[0])
 
   return (
-    <div className="min-h-screen bg-[#f5f6f8] font-sans pb-20">
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-8 pt-8">
+    <div className="font-sans pb-20">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-8 pt-4 sm:pt-8">
         
         {/* Back Link */}
         <Link href="/explore" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium mb-6 transition-colors">

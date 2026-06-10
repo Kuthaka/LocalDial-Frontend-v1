@@ -64,12 +64,18 @@ export default function Navbar() {
 
       {/* 2. Main Bar (Thick) - Desktop & Mobile */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center gap-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 cursor-pointer flex-shrink-0">
-          <span className="text-2xl font-black text-black tracking-wide">NearbyDirect</span>
-        </Link>
+        {/* Logo and Main Nav */}
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-2 cursor-pointer flex-shrink-0">
+            <span className="text-2xl font-black text-black tracking-wide">NearbyDirect</span>
+          </Link>
 
-
+          <div className="hidden lg:flex items-center gap-6">
+            <Link href="/explore" className="font-bold text-slate-800 hover:text-[#F4AE52] transition-colors">
+              Explore
+            </Link>
+          </div>
+        </div>
 
         {/* CTA, Search, User, Hamburger */}
         <div className="flex items-center gap-4 lg:gap-5 flex-shrink-0 ml-auto">
@@ -123,6 +129,7 @@ export default function Navbar() {
                 List Your Business (FREE)
               </Link>
               <div className="h-px bg-slate-100 w-full my-1"></div>
+              <Link href="/explore" onClick={() => setIsMobileMenuOpen(false)} className="text-[#104825] font-black hover:text-[#F4AE52] transition-colors py-1">Explore All Businesses</Link>
               <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Home Services</Link>
               <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Education</Link>
               <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-slate-800 font-bold hover:text-[#F4AE52] transition-colors py-1">Beauty & Spa</Link>

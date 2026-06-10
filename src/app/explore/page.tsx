@@ -16,7 +16,7 @@ export default async function ExplorePage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="w-full pb-20">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 py-6 px-4 md:px-8 shadow-sm">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
