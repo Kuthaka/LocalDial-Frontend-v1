@@ -1,33 +1,20 @@
-import Link from 'next/link'
+import { Rocket } from 'lucide-react'
 
 export default function BusinessDashboardBilling() {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <h3 className="text-lg font-bold text-[#1c2331] mb-6 border-b border-slate-100 pb-4">Wallet Balance</h3>
-          <div className="flex items-end gap-3 mb-6">
-            <span className="text-5xl font-black text-[#104825]">₹0</span>
-            <span className="text-slate-500 font-medium mb-1">.00</span>
-          </div>
-          <button className="w-full py-3 bg-[#104825] text-white font-bold rounded-xl hover:bg-[#0c361c] transition-all shadow-md">
-            Top Up Wallet
-          </button>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <h3 className="text-lg font-bold text-[#1c2331] mb-6 border-b border-slate-100 pb-4">Subscription Plan</h3>
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full mb-3 inline-block">FREE PLAN</span>
-              <h4 className="text-xl font-bold text-[#1c2331]">Basic Listing</h4>
-            </div>
-          </div>
-          <Link href="/business/dashboard/campaigns" className="block text-center w-full py-3 bg-[#F4AE52] text-[#1c2331] font-bold rounded-xl hover:bg-[#e09b3e] transition-all shadow-md">
-            Upgrade to Premium
-          </Link>
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+      <div className="w-24 h-24 bg-[#104825]/10 rounded-full flex items-center justify-center mb-6 shadow-sm border border-[#104825]/20">
+        <Rocket className="w-12 h-12 text-[#104825]" />
       </div>
+      <h2 className="text-3xl md:text-4xl font-black text-[#1c2331] tracking-tight mb-4">
+        Payments & Billing
+      </h2>
+      <div className="inline-block px-4 py-1.5 bg-[#F4AE52]/20 text-[#d98b25] font-black rounded-full text-sm tracking-widest uppercase mb-6 border border-[#F4AE52]/30">
+        Coming Soon
+      </div>
+      <p className="text-slate-500 max-w-lg text-lg leading-relaxed">
+        Our premium subscription and wallet top-up features are launching shortly. Get ready to supercharge your business!
+      </p>
     </div>
   )
 }
