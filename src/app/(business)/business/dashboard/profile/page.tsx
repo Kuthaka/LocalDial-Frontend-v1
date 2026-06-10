@@ -1,4 +1,5 @@
 import { getBusinessProfile } from '@/app/actions/businessProfile'
+import { getSystemCategories } from '@/app/actions/categories'
 import ProfileFormClient from './ProfileFormClient'
 
 export const metadata = {
@@ -7,6 +8,7 @@ export const metadata = {
 
 export default async function BusinessDashboardProfile() {
   const profileData = await getBusinessProfile()
+  const categoriesList = await getSystemCategories()
 
-  return <ProfileFormClient initialData={profileData} />
+  return <ProfileFormClient initialData={profileData} categoriesList={categoriesList} />
 }
