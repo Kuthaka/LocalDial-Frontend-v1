@@ -1,16 +1,27 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Plus, Camera, MapPin, Globe, Share2, Info, Building2, CheckCircle2, X, Loader2 } from 'lucide-react'
-import { updateBusinessProfile, checkUsernameAvailability } from '@/app/actions/businessProfile'
+import dynamic from 'next/dynamic'
+import { Plus, Camera, MapPin, Globe, Share2, Info, Building2, CheckCircle2, X, Loader2, Navigation } from 'lucide-react'
+import { updateBusinessProfile, checkUsernameAvailability, saveBusinessLocation } from '@/app/actions/businessProfile'
 import ImageCropperModal from '@/components/ImageCropperModal'
 import toast, { Toaster } from 'react-hot-toast'
+
+const LocationPicker = dynamic(() => import('@/components/LocationPicker'), { ssr: false, loading: () => <div className="w-full h-[380px] bg-slate-100 rounded-xl animate-pulse flex items-center justify-center text-slate-400 font-bold">Loading map...</div> })
 
 export default function ProfileFormClient({ initialData, categoriesList }: { initialData: any, categoriesList: any[] }) {
   const [isPending, setIsPending] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [tags, setTags] = useState<string[]>(initialData?.sub_categories || [])
   const [tagInput, setTagInput] = useState('')
+
+  // Location state
+  const [lat, setLat] = useState<number | string>(initialData?.latitude || '')
+  const [lng, setLng] = useState<number | string>(initialData?.longitude || '')
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false)
+  const [isSavingLocation, setIsSavingLocation] = useState(false)
+  const [addressText, setAddressText] = useState(initialData?.address_text || '')
+  const [googleMapsUrl, setGoogleMapsUrl] = useState(initialData?.google_maps_url || '')
 
   // Username validation state
   const [username, setUsername] = useState(initialData?.username || '')
@@ -165,6 +176,26 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
     setNewGalleryFiles(prev => prev.filter((_, i) => i !== index))
   }
 
+  function detectCurrentLocation() {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser.')
+      return
+    }
+    setIsDetectingLocation(true)
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLat(position.coords.latitude)
+        setLng(position.coords.longitude)
+        setIsDetectingLocation(false)
+        toast.success('Location detected! You can drag the pin to fine-tune.')
+      },
+      () => {
+        toast.error('Could not detect your location. Please allow location access.')
+        setIsDetectingLocation(false)
+      }
+    )
+  }
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
@@ -186,6 +217,10 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
     
     // Add tags explicitly before passing to action
     formData.set('subCategories', tags.join(','))
+
+    // Add lat/lng from state (not form field, since it's controlled)
+    formData.set('latitude', String(lat))
+    formData.set('longitude', String(lng))
 
     // Add gallery state manually to formData
     formData.set('existingGallery', JSON.stringify(existingGallery))
@@ -357,24 +392,119 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
                 <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
                 <input type="email" name="email" defaultValue={initialData?.primary_email || ''} className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50" />
               </div>
+
+              {/* Step 1: Full Address */}
+              <div className="md:col-span-2 p-4 rounded-xl border border-[#104825]/20 bg-[#104825]/5">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="w-6 h-6 rounded-full bg-[#104825] text-white text-xs font-black flex items-center justify-center flex-shrink-0">1</span>
+                  <label className="text-sm font-bold text-[#1c2331]">Type Your Full Address</label>
+                </div>
+                <textarea
+                  name="fullAddress"
+                  rows={3}
+                  value={addressText}
+                  onChange={(e) => setAddressText(e.target.value)}
+                  placeholder="e.g. 12, MG Road, Near City Mall, Kozhikode, Kerala - 673001"
+                  className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-white"
+                />
+                <p className="text-xs text-slate-500 mt-2 font-medium">This address text is shown publicly on your business page under the map.</p>
+              </div>
+
+              {/* Step 2: Map Pin */}
+              <div className="md:col-span-2 p-4 rounded-xl border border-[#104825]/20 bg-[#104825]/5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-[#104825] text-white text-xs font-black flex items-center justify-center flex-shrink-0">2</span>
+                    <div>
+                      <p className="text-sm font-bold text-[#1c2331]">Drop a Pin on the Map</p>
+                      <p className="text-xs text-slate-500 font-medium">Click anywhere or drag the pin. Customers will click "Get Directions" to navigate here.</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={detectCurrentLocation}
+                    disabled={isDetectingLocation}
+                    className="flex items-center gap-2 bg-[#104825] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#0c361c] transition-colors disabled:opacity-60 flex-shrink-0 ml-4"
+                  >
+                    {isDetectingLocation ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Navigation className="w-3.5 h-3.5" />}
+                    {isDetectingLocation ? 'Detecting...' : 'Use My Location'}
+                  </button>
+                </div>
+                <LocationPicker
+                  initialLat={lat}
+                  initialLng={lng}
+                  onLocationChange={(newLat, newLng) => { setLat(newLat); setLng(newLng) }}
+                />
+                <div className="flex gap-4 mt-3">
+                  <div className="flex-1">
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Latitude (saved automatically)</label>
+                    <input type="text" readOnly value={lat || 'Not pinned yet'} className="w-full p-2.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-600 font-mono" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Longitude (saved automatically)</label>
+                    <input type="text" readOnly value={lng || 'Not pinned yet'} className="w-full p-2.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-600 font-mono" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3: Optional Google Maps URL */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2">Full Address</label>
-                <textarea name="fullAddress" rows={3} defaultValue={initialData?.address_text || ''} className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50"></textarea>
+                <label className="block text-sm font-bold text-slate-700 mb-1">
+                  Custom Google Maps URL <span className="font-normal text-slate-400 text-xs">(Optional)</span>
+                </label>
+                <p className="text-xs text-slate-400 mb-2 font-medium">Paste your specific Google Maps business link. If empty, the pin coordinates above are used for directions.</p>
+                <input
+                  type="text"
+                  name="google_maps_url"
+                  value={googleMapsUrl}
+                  onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                  placeholder="https://maps.app.goo.gl/..."
+                  className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50"
+                />
               </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Latitude</label>
-                <input type="text" name="latitude" defaultValue={initialData?.latitude || ''} placeholder="11.2588" className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Longitude</label>
-                <input type="text" name="longitude" defaultValue={initialData?.longitude || ''} placeholder="75.7804" className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50" />
-              </div>
+
+              {/* Save Location Button */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2">Google Maps URL</label>
-                <input type="text" name="google_maps_url" defaultValue={initialData?.google_maps_url || ''} placeholder="https://maps.google.com/..." className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50" />
+                <button
+                  type="button"
+                  disabled={isSavingLocation}
+                  onClick={async () => {
+                    if (!lat || !lng) {
+                      toast.error('Please drop a pin on the map first.')
+                      return
+                    }
+                    setIsSavingLocation(true)
+                    const loadingToast = toast.loading('Saving location...')
+                    const result = await saveBusinessLocation({
+                      address_text: addressText,
+                      latitude: parseFloat(String(lat)),
+                      longitude: parseFloat(String(lng)),
+                      google_maps_url: googleMapsUrl,
+                    })
+                    if (result.error) {
+                      toast.error(result.error, { id: loadingToast })
+                    } else {
+                      toast.success('Location saved successfully!', { id: loadingToast })
+                    }
+                    setIsSavingLocation(false)
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-[#104825] hover:bg-[#0c361c] text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-60 shadow-sm"
+                >
+                  {isSavingLocation ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Saving Location...</>
+                  ) : (
+                    <><MapPin className="w-4 h-4" /> Save Location</>
+                  )}
+                </button>
+                {(lat && lng) && (
+                  <p className="text-center text-xs text-green-600 font-bold mt-2 flex items-center justify-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Pin set at {Number(lat).toFixed(5)}, {Number(lng).toFixed(5)}
+                  </p>
+                )}
               </div>
             </div>
           </div>
+
 
           {/* Section 4: Facilities & Amenities */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">

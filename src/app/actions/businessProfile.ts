@@ -25,6 +25,33 @@ export async function checkUsernameAvailability(username: string, currentUserId:
   return { available: data.length === 0 }
 }
 
+export async function saveBusinessLocation(data: {
+  address_text: string
+  latitude: number | null
+  longitude: number | null
+  google_maps_url: string
+}) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Unauthorized' }
+
+  const { error } = await supabase
+    .from('business_profiles')
+    .update({
+      address_text: data.address_text || null,
+      latitude: data.latitude || null,
+      longitude: data.longitude || null,
+      google_maps_url: data.google_maps_url || null,
+    })
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/business/dashboard', 'layout')
+  return { success: true }
+}
+
+
 export async function getBusinessProfile() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

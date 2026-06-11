@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Phone, MapPin, Mail, Clock, ShieldCheck, Edit3, Globe, CheckCircle2, MessageCircle, Camera, Users, Video } from 'lucide-react'
 import Link from 'next/link'
+
+const MapView = dynamic(() => import('@/components/MapView'), { ssr: false, loading: () => <div className="w-full h-[300px] bg-slate-100 rounded-2xl animate-pulse" /> })
 
 export default function OverviewClient({ profileData }: { profileData: any }) {
   // Use real data from backend, fallback to safe defaults if missing
@@ -248,6 +251,27 @@ export default function OverviewClient({ profileData }: { profileData: any }) {
           </div>
         </div>
         </div>
+
+      {/* Location Map Section */}
+      {(profileData?.latitude && profileData?.longitude) ? (
+        <div className="mt-8 px-8">
+          <MapView
+            lat={parseFloat(profileData.latitude)}
+            lng={parseFloat(profileData.longitude)}
+            businessName={businessDetails.name}
+            address={businessDetails.location !== 'Location not set' ? businessDetails.location : undefined}
+            googleMapsUrl={profileData?.google_maps_url}
+          />
+        </div>
+      ) : (
+        <div className="mt-8 px-8">
+          <div className="w-full h-[120px] rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-2">
+            <MapPin className="w-6 h-6 text-slate-300" />
+            <p className="text-sm font-bold text-slate-400">No location pinned yet</p>
+            <Link href="/business/dashboard/profile" className="text-xs text-[#104825] font-bold hover:underline">Set location in Edit Profile →</Link>
+          </div>
+        </div>
+      )}
 
       </div>
     </div>

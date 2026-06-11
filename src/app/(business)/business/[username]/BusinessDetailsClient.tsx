@@ -1,22 +1,28 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { ArrowLeft, Share2, Heart, Check, MapPin, Phone, Mail, Globe, Tag } from 'lucide-react'
 
+const MapView = dynamic(() => import('@/components/MapView'), { ssr: false, loading: () => <div className="w-full h-[300px] bg-slate-100 rounded-2xl animate-pulse" /> })
+
 export default function BusinessDetailsClient({ business }: { business: any }) {
-  // Ensure we have at least 4 images for the layout
-  let gallery = business.gallery_images || []
-  if (business.cover_url) gallery.unshift(business.cover_url)
-  
   const defaultImages = [
     'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1516280440502-6294b08709ec?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80'
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
   ]
 
-  const images = gallery.length >= 4 ? gallery.slice(0, 4) : [...gallery, ...defaultImages].slice(0, 4)
+  // Build gallery immutably — cover first, then gallery images, pad with defaults
+  const rawGallery: string[] = [
+    ...(business.cover_url ? [business.cover_url] : []),
+    ...(business.gallery_images || []),
+  ]
+  const images = rawGallery.length >= 4
+    ? rawGallery.slice(0, 4)
+    : [...rawGallery, ...defaultImages].slice(0, 4)
 
   const [mainImage, setMainImage] = useState(images[0])
 
@@ -164,6 +170,20 @@ export default function BusinessDetailsClient({ business }: { business: any }) {
             </div>
           </div>
         </div>
+
+        {/* Map Section - only show if coordinates exist */}
+        {business.latitude && business.longitude && (
+          <div className="mt-8">
+            <MapView
+              lat={parseFloat(business.latitude)}
+              lng={parseFloat(business.longitude)}
+              businessName={business.name}
+              address={business.address_text}
+              googleMapsUrl={business.google_maps_url}
+            />
+          </div>
+        )}
+
       </div>
     </div>
   )
