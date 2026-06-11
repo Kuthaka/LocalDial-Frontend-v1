@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { Search, Globe, Phone, MapPin, ChevronDown, User, Menu, X, HelpCircle, Info, Mail, Map, ArrowUpRight, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import LocationModal from "./LocationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { getSearchSuggestions } from '@/app/actions/search';
 
 export default function Navbar() {
   const [bgScrolled, setBgScrolled] = useState(false);
@@ -16,6 +18,12 @@ export default function Navbar() {
   const [isMounted, setIsMounted] = useState(false);
   const location = useSelector((state: RootState) => state.location.currentLocation);
 
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
     const handleScroll = () => {
@@ -24,6 +32,22 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!searchQuery || searchQuery.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      const res = await getSearchSuggestions(searchQuery, location);
+      setSuggestions(res);
+      setIsSearching(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, location]);
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
@@ -93,14 +117,84 @@ export default function Navbar() {
           </div>
 
           {/* Search Input */}
-          <div className="hidden md:flex items-center bg-white border-2 border-slate-300 rounded-full px-3 py-1.5 w-64 xl:w-80 hover:border-slate-400 transition-colors focus-within:bg-white focus-within:border-[#F4AE52] shadow-sm">
-            <Search className="w-4 h-4 text-slate-600 mr-2 flex-shrink-0" />
-            <input 
-              type="text" 
-              placeholder="SERVICE OR PLACE NAME" 
-              className="w-full bg-transparent border-none outline-none text-black placeholder:text-slate-500 text-xs font-bold uppercase" 
-            />
-            <div className="text-[10px] border border-slate-300 px-1.5 py-0.5 rounded text-slate-600 ml-2 whitespace-nowrap bg-slate-50 font-mono">Ctrl+K</div>
+          <div className="relative hidden md:block">
+            <div className="flex items-center bg-white border-2 border-slate-300 rounded-full px-3 py-1.5 w-64 xl:w-80 hover:border-slate-400 transition-colors focus-within:bg-white focus-within:border-[#F4AE52] shadow-sm">
+              <Search className="w-4 h-4 text-slate-600 mr-2 flex-shrink-0" />
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setShowSuggestions(true)
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    setShowSuggestions(false)
+                    router.push(`/search?q=${encodeURIComponent(searchQuery)}&loc=${encodeURIComponent(location && location !== 'Set your location' ? location : '')}`)
+                  }
+                }}
+                placeholder="SERVICE OR PLACE NAME" 
+                className="w-full bg-transparent border-none outline-none text-black placeholder:text-slate-500 text-xs font-bold uppercase" 
+              />
+              {isSearching ? (
+                <div className="w-3 h-3 rounded-full border-2 border-[#F4AE52] border-t-transparent animate-spin ml-2 flex-shrink-0"></div>
+              ) : (
+                <div className="text-[10px] border border-slate-300 px-1.5 py-0.5 rounded text-slate-600 ml-2 whitespace-nowrap bg-slate-50 font-mono flex-shrink-0">Enter</div>
+              )}
+            </div>
+
+            {/* Suggestions Dropdown */}
+            <AnimatePresence>
+              {showSuggestions && (searchQuery.length >= 2) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full mt-2 right-0 w-[360px] bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50 flex flex-col"
+                >
+                  {suggestions.length > 0 ? (
+                    <>
+                      {suggestions.map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setSearchQuery(item.name)
+                            setShowSuggestions(false)
+                            router.push(`/business/${item.username || item.id}`)
+                          }}
+                          className="flex items-start text-left gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 transition-colors w-full"
+                        >
+                          <div className="w-10 h-10 rounded bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200">
+                            <img src={item.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=1c2331&color=fff`} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-slate-800 truncate">{item.name}</p>
+                            <p className="text-xs text-slate-500 font-medium truncate">{item.primary_category || item.address_text || 'Business'}</p>
+                          </div>
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setShowSuggestions(false)
+                          router.push(`/search?q=${encodeURIComponent(searchQuery)}&loc=${encodeURIComponent(location && location !== 'Set your location' ? location : '')}`)
+                        }}
+                        className="w-full text-center py-3 text-xs font-bold text-[#104825] hover:bg-[#104825]/5 transition-colors border-t border-slate-100"
+                      >
+                        See all results for "{searchQuery}"
+                      </button>
+                    </>
+                  ) : (
+                    <div className="p-5 text-center">
+                      {!isSearching && (
+                        <p className="text-sm text-slate-500 font-medium">No matches found for "{searchQuery}"</p>
+                      )}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           
           <Search className="md:hidden w-5 h-5 text-black hover:text-[#F4AE52] cursor-pointer transition-colors" />

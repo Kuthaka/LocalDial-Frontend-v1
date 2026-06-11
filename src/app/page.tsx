@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, MapPin, Phone, ArrowLeft, Clock, TrendingUp, Star, ChevronRight } from "lucide-react";
+import { Search, MapPin, Phone, ArrowLeft, Clock, TrendingUp, Star, ChevronRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from 'next/navigation';
+import { getSearchSuggestions } from '@/app/actions/search';
 
 import DiscoverCities from "@/components/DiscoverCities";
 import FeaturedPlaces from "@/components/FeaturedPlaces";
@@ -81,13 +83,33 @@ const popularBanks = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const location = useSelector((state: RootState) => state.location.currentLocation);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [liveSuggestions, setLiveSuggestions] = useState<any[]>([]);
 
-  const suggestions = [
+  useEffect(() => {
+    if (!searchQuery || searchQuery.length < 2) {
+      setLiveSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const res = await getSearchSuggestions(searchQuery, location);
+      setLiveSuggestions(res);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, location]);
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}&loc=${encodeURIComponent(location && location !== 'Set your location' ? location : '')}`);
+    }
+  };
+
+  const defaultSuggestions = [
     { title: "Best Pizza nearby", type: "trending", category: "Food" },
     { title: "Plumbers in San Francisco", type: "recent", category: "Services" },
     { title: "Top rated Clinics", type: "trending", category: "Medical" },
@@ -187,6 +209,9 @@ export default function Home() {
                   type="text" 
                   placeholder="Search for businesses, services, or categories..." 
                   onFocus={() => setIsSearching(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSearchSubmit();
+                  }}
                   className="w-full bg-transparent outline-none text-[#1c2331] text-sm md:text-[15px] placeholder:text-slate-400 font-medium"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -206,7 +231,10 @@ export default function Home() {
                   <span className="font-medium text-sm md:text-[15px] whitespace-nowrap truncate">{location || "Near me"}</span>
                 </div>
                 
-                <button className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#104825] hover:bg-[#0c361c] flex items-center justify-center text-white flex-shrink-0 transition-colors shadow-lg shadow-[#104825]/20">
+                <button 
+                  onClick={handleSearchSubmit}
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#104825] hover:bg-[#0c361c] flex items-center justify-center text-white flex-shrink-0 transition-colors shadow-lg shadow-[#104825]/20"
+                >
                   <Search className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
@@ -252,27 +280,68 @@ export default function Home() {
 
                   {/* Suggestions List */}
                   <div className="md:col-span-2 order-1 md:order-2">
-                    <h3 className="text-xs font-black text-black uppercase tracking-widest mb-4">Quick Suggestions</h3>
+                    <h3 className="text-xs font-black text-black uppercase tracking-widest mb-4">
+                      {searchQuery.length >= 2 ? 'Live Search Results' : 'Quick Suggestions'}
+                    </h3>
                     <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                      {suggestions.slice(0, 4).map((item, i) => (
-                        <motion.div
-                          key={i}
-                          whileHover={{ backgroundColor: "#f8fafc" }}
-                          whileTap={{ backgroundColor: "#f1f5f9" }}
-                          className={`flex items-center justify-between p-3 md:p-4 cursor-pointer ${i !== 3 ? 'border-b border-slate-50' : ''}`}
-                        >
-                          <div className="flex items-center gap-3 md:gap-4">
-                            <div className={`p-2 rounded-lg ${item.type === 'trending' ? 'bg-orange-50 text-orange-500' : 'bg-slate-50 text-slate-400'}`}>
-                              {item.type === 'trending' ? <TrendingUp className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                      {searchQuery.length >= 2 ? (
+                        liveSuggestions.length > 0 ? (
+                          <>
+                            {liveSuggestions.map((item, i) => (
+                              <motion.div
+                                key={item.id}
+                                onClick={() => router.push(`/business/${item.username || item.id}`)}
+                                whileHover={{ backgroundColor: "#f8fafc" }}
+                                whileTap={{ backgroundColor: "#f1f5f9" }}
+                                className={`flex items-center justify-between p-3 md:p-4 cursor-pointer ${i !== liveSuggestions.length - 1 ? 'border-b border-slate-50' : ''}`}
+                              >
+                                <div className="flex items-center gap-3 md:gap-4">
+                                  <div className="w-10 h-10 rounded overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                                    <img src={item.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=1c2331&color=fff`} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div>
+                                    <p className="font-bold text-slate-900 text-sm md:text-[15px] line-clamp-1">{item.name}</p>
+                                    <span className="text-[10px] font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase line-clamp-1">{item.primary_category || item.address_text || 'Business'}</span>
+                                  </div>
+                                </div>
+                                <ArrowUpRight className="w-4 h-4 text-slate-300 flex-shrink-0 ml-2" />
+                              </motion.div>
+                            ))}
+                            <button
+                              onClick={handleSearchSubmit}
+                              className="w-full text-center py-4 text-sm font-bold text-[#104825] hover:bg-[#104825]/5 transition-colors border-t border-slate-100"
+                            >
+                              See all results for "{searchQuery}"
+                            </button>
+                          </>
+                        ) : (
+                          <div className="p-8 text-center text-slate-500 font-medium">No results found for "{searchQuery}"</div>
+                        )
+                      ) : (
+                        defaultSuggestions.slice(0, 4).map((item, i) => (
+                          <motion.div
+                            key={i}
+                            onClick={() => {
+                              setSearchQuery(item.title);
+                              setTimeout(() => handleSearchSubmit(), 100);
+                            }}
+                            whileHover={{ backgroundColor: "#f8fafc" }}
+                            whileTap={{ backgroundColor: "#f1f5f9" }}
+                            className={`flex items-center justify-between p-3 md:p-4 cursor-pointer ${i !== 3 ? 'border-b border-slate-50' : ''}`}
+                          >
+                            <div className="flex items-center gap-3 md:gap-4">
+                              <div className={`p-2 rounded-lg ${item.type === 'trending' ? 'bg-orange-50 text-orange-500' : 'bg-slate-50 text-slate-400'}`}>
+                                {item.type === 'trending' ? <TrendingUp className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                              </div>
+                              <div>
+                                <p className="font-bold text-slate-900 text-sm md:text-[15px]">{item.title}</p>
+                                <span className="text-[10px] font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-bold text-slate-900 text-sm md:text-[15px]">{item.title}</p>
-                              <span className="text-[10px] font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase">{item.category}</span>
-                            </div>
-                          </div>
-                          <Star className="w-4 h-4 text-slate-200 hover:text-amber-400 transition-colors" />
-                        </motion.div>
-                      ))}
+                            <ArrowUpRight className="w-4 h-4 text-slate-200" />
+                          </motion.div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
