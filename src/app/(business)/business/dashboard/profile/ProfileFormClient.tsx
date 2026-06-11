@@ -9,6 +9,23 @@ import toast, { Toaster } from 'react-hot-toast'
 
 const LocationPicker = dynamic(() => import('@/components/LocationPicker'), { ssr: false, loading: () => <div className="w-full h-[380px] bg-slate-100 rounded-xl animate-pulse flex items-center justify-center text-slate-400 font-bold">Loading map...</div> })
 
+const COUNTRY_CODES = [
+  { code: '+91', country: 'India' },
+  { code: '+1', country: 'USA/Canada' },
+  { code: '+44', country: 'UK' },
+  { code: '+971', country: 'UAE' },
+  { code: '+61', country: 'Australia' },
+  { code: '+65', country: 'Singapore' },
+  { code: '+966', country: 'Saudi Arabia' },
+  { code: '+974', country: 'Qatar' },
+  { code: '+968', country: 'Oman' },
+  { code: '+973', country: 'Bahrain' },
+  { code: '+965', country: 'Kuwait' },
+  { code: '+60', country: 'Malaysia' },
+  { code: '+64', country: 'New Zealand' },
+  { code: '+27', country: 'South Africa' }
+]
+
 export default function ProfileFormClient({ initialData, categoriesList }: { initialData: any, categoriesList: any[] }) {
   const [isPending, setIsPending] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -111,6 +128,14 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
   ]
 
   const savedAmenities = initialData?.amenities || []
+
+  const initialWhatsapp = initialData?.whatsapp_number || ''
+  const initialCodeMatch = initialWhatsapp.match(/^(\+\d{1,4})/)
+  const initialCode = initialCodeMatch ? initialCodeMatch[1] : '+91'
+  const initialPhone = initialCodeMatch ? initialWhatsapp.replace(initialCodeMatch[1], '') : initialWhatsapp
+
+  const [whatsappCode, setWhatsappCode] = useState(initialCode)
+  const [whatsappInput, setWhatsappInput] = useState(initialPhone)
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -391,6 +416,29 @@ export default function ProfileFormClient({ initialData, categoriesList }: { ini
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
                 <input type="email" name="email" defaultValue={initialData?.primary_email || ''} className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50" />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-bold text-slate-700 mb-2">WhatsApp Number</label>
+                <div className="flex gap-2">
+                  <select
+                    value={whatsappCode}
+                    onChange={(e) => setWhatsappCode(e.target.value)}
+                    className="w-[140px] p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50 font-medium text-sm"
+                  >
+                    {COUNTRY_CODES.map((c) => (
+                      <option key={c.country} value={c.code}>{c.code} {c.country}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    value={whatsappInput}
+                    onChange={(e) => setWhatsappInput(e.target.value.replace(/\D/g, ''))}
+                    placeholder="e.g. 9876543210"
+                    className="flex-1 p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#104825] bg-slate-50"
+                  />
+                  <input type="hidden" name="whatsapp_number" value={whatsappInput ? `${whatsappCode}${whatsappInput}` : ''} />
+                </div>
               </div>
 
               {/* Step 1: Full Address */}
