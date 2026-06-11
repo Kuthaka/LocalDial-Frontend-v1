@@ -9,7 +9,7 @@ export async function getSearchSuggestions(query: string, location?: string | nu
 
   let q = supabase
     .from('business_profiles')
-    .select('id, name, primary_category, username, address_text, is_verified, cover_url, logo_url')
+    .select('id, name, primary_category, username, address_text, cover_url, logo_url')
     .or(`name.ilike.%${query}%,primary_category.ilike.%${query}%,tagline.ilike.%${query}%`)
     
   if (location && location !== 'Set your location') {
@@ -42,7 +42,7 @@ export async function getSearchResults(query: string, location?: string | null) 
     q = q.ilike('address_text', `%${location}%`)
   }
 
-  const { data, error } = await q.order('is_verified', { ascending: false }).order('created_at', { ascending: false })
+  const { data, error } = await q.order('created_at', { ascending: false })
 
   if (error) {
     console.error('Search results error:', error)
