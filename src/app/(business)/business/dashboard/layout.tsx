@@ -29,5 +29,7 @@ export default async function BusinessDashboardLayout({ children }: { children: 
     redirect('/business/login')
   }
 
-  return <DashboardLayoutClient profile={profile}>{children}</DashboardLayoutClient>
+  const hasPasswordSet = user.user_metadata?.password_set === true;
+
+  return <DashboardLayoutClient profile={profile} hasPasswordSet={hasPasswordSet}>{children}</DashboardLayoutClient>
 }

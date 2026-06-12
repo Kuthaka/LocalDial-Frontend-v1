@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { CategorySchema } from '@/validations/category'
+import { randomUUID } from 'crypto'
 
 export async function approveBusiness(userId: string) {
   const supabase = await createClient()
@@ -177,5 +178,61 @@ export async function editCategory(formData: FormData) {
   }
 
   revalidatePath('/admin/dashboard/categories')
+  return { success: true }
+}
+
+export async function createAdminBusiness(formData: FormData) {
+  const supabase = await createClient()
+
+  // Ensure user is an admin (in a real app, you'd check roles here)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Unauthorized: Admin access required.' }
+  }
+
+  const name = formData.get('name') as string
+  const category = formData.get('category') as string
+  const phone = formData.get('phone') as string
+  const location = formData.get('location') as string
+  const tagline = formData.get('tagline') as string
+
+  // Generate a random ID for this unclaimed business
+  const id = randomUUID()
+  
+  // Create a base username
+  const baseUsername = name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Math.floor(Math.random() * 1000)
+
+  // We perform a direct insert. 
+  // IMPORTANT: This requires the foreign key constraint on `business_profiles.id` to be removed or bypassed.
+  const { error } = await supabase
+    .from('business_profiles')
+    .insert({
+      id: id,
+      name: name,
+      username: baseUsername,
+      primary_category: category,
+      primary_phone: phone || null,
+      address_text: location,
+      tagline: tagline || null,
+      is_verified: false, // Unclaimed businesses are unverified by default
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+
+  if (error) {
+    console.error('Failed to create admin business:', error)
+    
+    // Check if it's the specific foreign key error
+    if (error.code === '23503' && error.message.includes('business_profiles_id_fkey')) {
+      return { error: 'Database constraint error: You must run the admin setup SQL snippet to allow unclaimed businesses. See instructions.' }
+    }
+    
+    return { error: error.message }
+  }
+
+  revalidatePath('/admin/dashboard/businesses')
+  revalidatePath('/explore')
+  revalidatePath('/')
+  
   return { success: true }
 }

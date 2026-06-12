@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Search, MapPin, Phone, ArrowLeft, Clock, TrendingUp, Star, ChevronRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from 'next/navigation';
-import { getSearchSuggestions } from '@/app/actions/search';
+import { getSearchSuggestions, getSearchResults } from '@/app/actions/search';
 
 import DiscoverCities from "@/components/DiscoverCities";
 import FeaturedPlaces from "@/components/FeaturedPlaces";
@@ -19,69 +19,6 @@ import { RootState } from "@/store";
 import QuickCategories from "@/components/QuickCategories";
 import Navbar from "@/components/Navbar";
 
-const popularRestaurants = [
-  { 
-    name: "Golden Skillet", 
-    handle: "goldenskillet_sf", 
-    description: "Award-winning Southern comfort food in the heart of the city. Join us for brunch!", 
-    coverImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
-    logoImage: "https://images.unsplash.com/photo-1583338917451-faf275138fce?w=200&q=80",
-    verified: true
-  },
-  { 
-    name: "Sushi Nori", 
-    handle: "sushinori_official", 
-    description: "Premium omakase experience. Fresh fish imported daily from Tsukiji market.", 
-    coverImage: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80",
-    verified: true
-  },
-  { 
-    name: "The Urban Roast", 
-    handle: "urbanroast_cafe", 
-    description: "Specialty coffee roasters and artisan pastries. Note: we are exclusively located in downtown.", 
-    coverImage: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80",
-    verified: false
-  },
-  { 
-    name: "Bella Trattoria", 
-    handle: "bellatrattoria", 
-    description: "Authentic Italian family recipes passed down for generations. Wood-fired pizza.", 
-    coverImage: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
-    verified: true
-  },
-];
-
-const popularBanks = [
-  { 
-    name: "Chase Bank", 
-    handle: "chase_sf", 
-    description: "Full-service banking, ATMs, and financial advising. Market St branch.", 
-    coverImage: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=800&q=80",
-    verified: true
-  },
-  { 
-    name: "Bank of America", 
-    handle: "bofa_downtown", 
-    description: "Accelerating your financial freedom. Note: we are exclusively located in downtown.", 
-    coverImage: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80",
-    verified: true
-  },
-  { 
-    name: "Capital One Cafe", 
-    handle: "capitalonecafe", 
-    description: "Banking reinvented. Grab a coffee, use our free Wi-Fi, and chat with ambassadors.", 
-    coverImage: "https://images.unsplash.com/photo-1556740714-a8395b3bf30f?w=800&q=80",
-    verified: true
-  },
-  { 
-    name: "Wells Fargo", 
-    handle: "wellsfargo_mission", 
-    description: "Providing premium banking services for personal and business needs.", 
-    coverImage: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=800&q=80",
-    verified: true
-  },
-];
-
 export default function Home() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,6 +27,41 @@ export default function Home() {
   const location = useSelector((state: RootState) => state.location.currentLocation);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [liveSuggestions, setLiveSuggestions] = useState<any[]>([]);
+  const [homeRestaurants, setHomeRestaurants] = useState<any[]>([]);
+  const [homeBanks, setHomeBanks] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!location || location === 'Set your location') {
+      setIsLocationModalOpen(true);
+    }
+  }, [location]);
+
+  useEffect(() => {
+    async function loadHomeData() {
+      const loc = location === 'Set your location' ? '' : location;
+      const results = await getSearchResults('', loc);
+      
+      if (results && results.length > 0) {
+        const allCards = results.map((business: any) => ({
+          href: `/business/${business.username || business.id}`,
+          coverImage: business.cover_url || (business.gallery_images && business.gallery_images[0]) || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+          logoImage: business.logo_url,
+          name: business.name || 'Unnamed Business',
+          handle: business.username || (business.tagline ? business.tagline.replace(/\\s+/g, '').toLowerCase() : business.id.slice(0, 8)),
+          description: business.description || business.tagline || 'No description available.',
+          verified: business.is_verified !== false,
+          category: business.primary_category
+        }));
+
+        const r = allCards.filter((c: any) => c.category === 'Restaurants');
+        const b = allCards.filter((c: any) => c.category === 'Healthcare'); // fallback for banks since seed data uses Healthcare
+
+        if (r.length > 0) setHomeRestaurants(r.slice(0, 4));
+        if (b.length > 0) setHomeBanks(b.slice(0, 4));
+      }
+    }
+    loadHomeData();
+  }, [location]);
 
   useEffect(() => {
     if (!searchQuery || searchQuery.length < 2) {
@@ -373,10 +345,14 @@ export default function Home() {
                 <QuickCategories />
                 
                 {/* Popular Restaurants Section */}
-                <PopularSection title="Popular Restaurants" businesses={popularRestaurants} />
+                {homeRestaurants.length > 0 && (
+                  <PopularSection title={location && location !== 'Set your location' ? `Popular Restaurants in ${location}` : "Popular Restaurants"} businesses={homeRestaurants} />
+                )}
                 
                 {/* Popular Banks Section */}
-                <PopularSection title="Popular Banks near you" businesses={popularBanks} />
+                {homeBanks.length > 0 && (
+                  <PopularSection title={location && location !== 'Set your location' ? `Top Healthcare near ${location}` : "Popular Healthcare near you"} businesses={homeBanks} />
+                )}
                 
                 {/* Discover Cities Section */}
                 <DiscoverCities />

@@ -8,7 +8,8 @@ import {
   Tags,
   Users,
   Settings,
-  LogOut
+  LogOut,
+  Building2
 } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
 
@@ -17,6 +18,7 @@ export default function AdminLayoutClient({ children, userEmail }: { children: R
 
   const navItems = [
     { id: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
+    { id: '/admin/dashboard/businesses', label: 'Business Directory', icon: Building2 },
     { id: '/admin/dashboard/categories', label: 'Categories', icon: Tags },
     { id: '/admin/dashboard/users', label: 'User Management', icon: Users },
     { id: '/admin/dashboard/settings', label: 'Settings', icon: Settings },

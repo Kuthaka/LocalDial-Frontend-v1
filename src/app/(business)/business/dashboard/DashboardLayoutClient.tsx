@@ -7,14 +7,16 @@ import {
   LayoutDashboard, 
   Users, 
   Store, 
-  Megaphone, 
-  CreditCard, 
+  Lock,
   LogOut,
-  Building2
+  Building2,
+  AlertTriangle,
+  X
 } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
+import { motion, AnimatePresence } from 'framer-motion'
 
-export default function DashboardLayoutClient({ children, profile }: { children: React.ReactNode, profile: any }) {
+export default function DashboardLayoutClient({ children, profile, hasPasswordSet }: { children: React.ReactNode, profile: any, hasPasswordSet: boolean }) {
   const pathname = usePathname()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
@@ -22,8 +24,7 @@ export default function DashboardLayoutClient({ children, profile }: { children:
     { id: '/business/dashboard', label: 'Overview', icon: LayoutDashboard },
     { id: '/business/dashboard/leads', label: 'Lead Management', icon: Users },
     { id: '/business/dashboard/profile', label: 'Profile & Listing', icon: Store },
-    { id: '/business/dashboard/campaigns', label: 'Campaigns & Ads', icon: Megaphone },
-    { id: '/business/dashboard/billing', label: 'Payments & Billing', icon: CreditCard },
+    { id: '/business/dashboard/security', label: 'Security & Login', icon: Lock },
   ]
 
   const activeLabel = navItems.find(i => i.id === pathname)?.label || 'Dashboard'
@@ -149,6 +150,32 @@ export default function DashboardLayoutClient({ children, profile }: { children:
           )
         })}
       </nav>
+
+      {/* Password Setup Reminder Toast */}
+      <AnimatePresence>
+        {!hasPasswordSet && (
+          <motion.div 
+            initial={{ opacity: 0, x: 50, y: 50 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed bottom-24 md:bottom-6 right-4 md:right-6 bg-white rounded-2xl shadow-2xl border-l-4 border-[#F4AE52] p-4 max-w-sm z-50 flex gap-4 items-start"
+          >
+            <div className="bg-orange-50 p-2 rounded-full flex-shrink-0 text-[#F4AE52]">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="font-bold text-[#1c2331] text-sm mb-1">Set up your password</h4>
+              <p className="text-xs text-slate-500 mb-3">You are currently using OTP to login. Set a password for easier access to your dashboard.</p>
+              <Link 
+                href="/business/dashboard/security" 
+                className="text-xs font-bold text-white bg-[#104825] px-4 py-2 rounded-lg hover:bg-[#0c361c] transition-colors inline-block"
+              >
+                Setup Password
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

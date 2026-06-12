@@ -49,9 +49,11 @@ export default function BusinessLogin() {
     }
   }
 
-  async function handlePasswordSubmit(formData: FormData) {
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setLoading(true)
     setError(null)
+    const formData = new FormData(e.currentTarget)
     const result = await loginBusiness(formData)
     if (result?.error) {
       setError(result.error)
@@ -113,7 +115,11 @@ export default function BusinessLogin() {
                       disabled={loading || !email}
                       className="w-full bg-[#104825] hover:bg-[#0c361c] text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 text-[15px] shadow-[0_8px_30px_rgba(16,72,37,0.2)] hover:shadow-[0_8px_30px_rgba(16,72,37,0.3)] hover:-translate-y-0.5 active:translate-y-0"
                     >
-                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Request OTP'}
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" /> Requesting...
+                        </>
+                      ) : 'Request OTP'}
                     </button>
                   </motion.form>
                 ) : (
@@ -122,7 +128,7 @@ export default function BusinessLogin() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    action={handlePasswordSubmit} 
+                    onSubmit={handlePasswordSubmit} 
                     className="space-y-5"
                   >
                     <div className="space-y-1.5">
@@ -160,8 +166,15 @@ export default function BusinessLogin() {
                       disabled={loading}
                       className="w-full bg-[#104825] hover:bg-[#0c361c] text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 text-[15px] shadow-[0_8px_30px_rgba(16,72,37,0.2)] hover:shadow-[0_8px_30px_rgba(16,72,37,0.3)] hover:-translate-y-0.5 active:translate-y-0"
                     >
-                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
-                      <ArrowRight className="w-4 h-4" />
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" /> Signing In...
+                        </>
+                      ) : (
+                        <>
+                          Sign In <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
                     </button>
                   </motion.form>
                 )}
@@ -236,7 +249,11 @@ export default function BusinessLogin() {
                 disabled={loading || otp.join('').length < 6}
                 className="w-full bg-[#104825] hover:bg-[#0c361c] text-white font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2 text-[15px] shadow-[0_8px_30px_rgba(16,72,37,0.2)] hover:shadow-[0_8px_30px_rgba(16,72,37,0.3)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:hover:translate-y-0"
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Login'}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" /> Verifying...
+                  </>
+                ) : 'Verify & Login'}
               </button>
               
               <div className="mt-6 flex justify-between items-center">
