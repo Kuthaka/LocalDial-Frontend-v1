@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createRawClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { CategorySchema } from '@/validations/category'
 import { randomUUID } from 'crypto'
@@ -233,6 +234,111 @@ export async function createAdminBusiness(formData: FormData) {
   revalidatePath('/admin/dashboard/businesses')
   revalidatePath('/explore')
   revalidatePath('/')
+  
+  return { success: true }
+}
+
+export async function adminAddBusiness(formData: FormData) {
+  const supabase = await createClient()
+
+  // 1. Verify admin
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated.' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    return { error: 'Not authorized.' }
+  }
+
+  // Extract form data
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const businessName = formData.get('businessName') as string
+  const mobile = formData.get('mobile') as string
+  const city = formData.get('city') as string
+  const category = formData.get('category') as string
+
+  // 2. Create raw client to sign up the business user without overwriting admin's session cookies
+  const rawSupabase = createRawClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      }
+    }
+  )
+
+  const { data: authData, error: signUpError } = await rawSupabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        role: 'business',
+        business_name: businessName,
+        password_set: true
+      }
+    }
+  })
+
+  if (signUpError) {
+    return { error: signUpError.message }
+  }
+
+  if (!authData.user) {
+    return { error: 'User creation failed.' }
+  }
+
+  const newUserId = authData.user.id
+
+  // 3. Upsert into profiles
+  const { error: profileError } = await supabase.from('profiles').upsert({
+    id: newUserId,
+    role: 'business',
+    status: 'approved',
+    business_name: businessName
+  })
+
+  if (profileError) {
+    return { error: 'Failed to create profile: ' + profileError.message }
+  }
+
+  // 4. Insert into business_profiles
+  const { error: bpError } = await supabase.from('business_profiles').insert({
+    id: newUserId,
+    name: businessName,
+    city: city || 'Unknown',
+    profile_score: 60
+  })
+
+  if (bpError) {
+    return { error: 'Failed to create business profile: ' + bpError.message }
+  }
+
+  // 5. Insert into business_contacts
+  if (mobile) {
+    await supabase.from('business_contacts').insert({
+      business_id: newUserId,
+      mobiles: [mobile],
+      emails: [email]
+    })
+  }
+
+  // 6. Insert category if provided
+  if (category) {
+    await supabase.from('business_categories').insert({
+      business_id: newUserId,
+      category_name: category
+    })
+  }
+
+  revalidatePath('/admin/dashboard/businesses')
   
   return { success: true }
 }
