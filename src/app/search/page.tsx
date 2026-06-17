@@ -14,8 +14,10 @@ export default async function SearchPage({
   const resolvedParams = await searchParams;
   const q = typeof resolvedParams.q === 'string' ? resolvedParams.q : ''
   const loc = typeof resolvedParams.loc === 'string' ? resolvedParams.loc : ''
+  const lat = typeof resolvedParams.lat === 'string' ? parseFloat(resolvedParams.lat) : null
+  const lng = typeof resolvedParams.lng === 'string' ? parseFloat(resolvedParams.lng) : null
 
-  const results = await getSearchResults(q, loc)
+  const results = await getSearchResults(q, loc, lat, lng)
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] flex flex-col font-sans">
@@ -79,6 +81,11 @@ export default async function SearchPage({
                       <div className="flex items-center gap-1.5 text-slate-500 font-medium max-w-[70%]">
                         <MapPin className="w-4 h-4 text-[#104825] flex-shrink-0" />
                         <span className="truncate">{business.address_text || business.city || 'Location unavailable'}</span>
+                        {business.distance !== undefined && business.distance !== 999 && (
+                          <span className="text-xs text-[#104825] bg-green-50 px-1.5 py-0.5 rounded ml-1 font-bold">
+                            {business.distance.toFixed(1)} km
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded text-yellow-600 font-bold text-xs">
                         <Star className="w-3.5 h-3.5 fill-current" />

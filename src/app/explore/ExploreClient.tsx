@@ -8,6 +8,8 @@ import PopularSection from '@/components/PopularSection'
 
 export default function ExploreClient() {
   const location = useSelector((state: RootState) => state.location.currentLocation)
+  const lat = useSelector((state: RootState) => state.location.latitude)
+  const lng = useSelector((state: RootState) => state.location.longitude)
   const [businesses, setBusinesses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -15,12 +17,12 @@ export default function ExploreClient() {
     async function loadData() {
       setLoading(true)
       const loc = location === 'Set your location' ? '' : location
-      const results = await getSearchResults('', loc)
+      const results = await getSearchResults('', loc, lat, lng)
       setBusinesses(results)
       setLoading(false)
     }
     loadData()
-  }, [location])
+  }, [location, lat, lng])
 
   const allCards = businesses.map(business => ({
     href: `/business/${business.username || business.id}`,
@@ -30,7 +32,8 @@ export default function ExploreClient() {
     handle: business.username || (business.tagline ? business.tagline.replace(/\s+/g, '').toLowerCase() : business.id.slice(0, 8)),
     description: business.description || business.tagline || 'No description available.',
     verified: business.is_verified !== false,
-    category: business.primary_category
+    category: business.primary_category,
+    distance: business.distance
   }))
 
   const shops = allCards.filter(c => c.category === 'Shopping')

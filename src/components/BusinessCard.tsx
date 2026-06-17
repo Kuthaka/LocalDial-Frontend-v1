@@ -1,4 +1,4 @@
-import { BadgeCheck } from 'lucide-react';
+import { BadgeCheck, MapPin } from 'lucide-react';
 
 interface BusinessCardProps {
   coverImage: string;
@@ -7,6 +7,7 @@ interface BusinessCardProps {
   handle: string;
   description: string;
   verified?: boolean;
+  distance?: number;
 }
 
 export default function BusinessCard({ 
@@ -15,7 +16,8 @@ export default function BusinessCard({
   name, 
   handle, 
   description,
-  verified = true 
+  verified = true,
+  distance
 }: BusinessCardProps) {
   return (
     <div className="bg-white rounded-[16px] border border-slate-200 shadow-sm overflow-hidden flex flex-col w-[240px] flex-shrink-0 snap-start hover:shadow-md transition-shadow relative">
@@ -52,7 +54,14 @@ export default function BusinessCard({
             </div>
           )}
         </div>
-        <p className="text-slate-500 text-[12px] leading-tight mb-1.5">@{handle}</p>
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-slate-500 text-[12px] leading-tight truncate">@{handle}</p>
+          {distance !== undefined && distance !== 999 && (
+            <div className="flex items-center gap-0.5 text-[#104825] bg-green-50 px-1 rounded text-[10px] font-bold">
+              <MapPin className="w-2.5 h-2.5" /> {distance.toFixed(1)} km
+            </div>
+          )}
+        </div>
         
         <p className="text-[#0f1419] text-[12px] leading-snug line-clamp-2">
           {description}

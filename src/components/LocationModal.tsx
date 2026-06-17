@@ -61,9 +61,9 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
     return () => clearTimeout(delayDebounceFn);
   }, [search]);
 
-  const finalizeLocation = (locName: string) => {
+  const finalizeLocation = (locName: string, lat: number | null, lng: number | null) => {
     setSearch(locName);
-    dispatch(setReduxLocation(locName));
+    dispatch(setReduxLocation({ name: locName, lat, lng }));
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
@@ -87,7 +87,7 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
           const data = await res.json();
           const city = data.address.city || data.address.town || data.address.village || data.address.county || data.display_name.split(',')[0];
           
-          finalizeLocation(city);
+          finalizeLocation(city, latitude, longitude);
         } catch (err) {
           console.error(err);
         } finally {
@@ -101,8 +101,8 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
     );
   };
 
-  const handleSelectLocation = (locName: string) => {
-    finalizeLocation(locName);
+  const handleSelectLocation = (locName: string, lat: number | null, lng: number | null) => {
+    finalizeLocation(locName, lat, lng);
   };
 
   return (
@@ -184,7 +184,7 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
                   suggestions.map((loc, idx) => (
                     <button 
                       key={idx} 
-                      onClick={() => handleSelectLocation(loc.display_name.split(',')[0])} 
+                      onClick={() => handleSelectLocation(loc.display_name.split(',')[0], parseFloat(loc.lat), parseFloat(loc.lon))} 
                       className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 text-left transition-colors"
                     >
                       <MapPin className="w-5 h-5 text-[#104825]" />
@@ -192,14 +192,20 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
                     </button>
                   ))
                 ) : (
-                  ["San Francisco, CA", "New York, NY", "Los Angeles, CA", "Chicago, IL", "Austin, TX"].map((city) => (
+                  [
+                    { name: "San Francisco, CA", lat: 37.7749, lng: -122.4194 },
+                    { name: "New York, NY", lat: 40.7128, lng: -74.0060 },
+                    { name: "Los Angeles, CA", lat: 34.0522, lng: -118.2437 },
+                    { name: "Chicago, IL", lat: 41.8781, lng: -87.6298 },
+                    { name: "Austin, TX", lat: 30.2672, lng: -97.7431 }
+                  ].map((city) => (
                     <button 
-                      key={city} 
-                      onClick={() => handleSelectLocation(city)} 
+                      key={city.name} 
+                      onClick={() => handleSelectLocation(city.name, city.lat, city.lng)} 
                       className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 text-left transition-colors"
                     >
                       <MapPin className="w-5 h-5 text-slate-400" />
-                      <span className="font-medium text-slate-700 text-sm">{city}</span>
+                      <span className="font-medium text-slate-700 text-sm">{city.name}</span>
                     </button>
                   ))
                 )}

@@ -17,6 +17,8 @@ export default function Navbar() {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const location = useSelector((state: RootState) => state.location.currentLocation);
+  const lat = useSelector((state: RootState) => state.location.latitude);
+  const lng = useSelector((state: RootState) => state.location.longitude);
 
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,13 +43,13 @@ export default function Navbar() {
 
     const timer = setTimeout(async () => {
       setIsSearching(true);
-      const res = await getSearchSuggestions(searchQuery, location);
+      const res = await getSearchSuggestions(searchQuery, location, lat, lng);
       setSuggestions(res);
       setIsSearching(false);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, location]);
+  }, [searchQuery, location, lat, lng]);
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
@@ -171,7 +173,12 @@ export default function Navbar() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-slate-800 truncate">{item.name}</p>
-                            <p className="text-xs text-slate-500 font-medium truncate">{item.primary_category || item.address_text || 'Business'}</p>
+                            <p className="text-xs text-slate-500 font-medium truncate">
+                              {item.primary_category || item.address_text || 'Business'}
+                              {item.distance !== undefined && item.distance !== 999 && (
+                                <span className="text-[#104825] font-bold ml-1">({item.distance.toFixed(1)} km)</span>
+                              )}
+                            </p>
                           </div>
                         </button>
                       ))}

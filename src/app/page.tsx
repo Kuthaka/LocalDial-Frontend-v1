@@ -25,6 +25,8 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const location = useSelector((state: RootState) => state.location.currentLocation);
+  const lat = useSelector((state: RootState) => state.location.latitude);
+  const lng = useSelector((state: RootState) => state.location.longitude);
   const isLocating = useSelector((state: RootState) => state.location.isLocating);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [liveSuggestions, setLiveSuggestions] = useState<any[]>([]);
@@ -40,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     async function loadHomeData() {
       const loc = location === 'Set your location' ? '' : location;
-      const results = await getSearchResults('', loc);
+      const results = await getSearchResults('', loc, lat, lng);
       
       if (results && results.length > 0) {
         const allCards = results.map((business: any) => ({
@@ -51,7 +53,8 @@ export default function Home() {
           handle: business.username || (business.tagline ? business.tagline.replace(/\\s+/g, '').toLowerCase() : business.id.slice(0, 8)),
           description: business.description || business.tagline || 'No description available.',
           verified: business.is_verified !== false,
-          category: business.primary_category
+          category: business.primary_category,
+          distance: business.distance
         }));
 
         const r = allCards.filter((c: any) => c.category === 'Restaurants');
@@ -59,10 +62,13 @@ export default function Home() {
 
         if (r.length > 0) setHomeRestaurants(r.slice(0, 4));
         if (b.length > 0) setHomeBanks(b.slice(0, 4));
+      } else {
+        setHomeRestaurants([]);
+        setHomeBanks([]);
       }
     }
     loadHomeData();
-  }, [location]);
+  }, [location, lat, lng]);
 
   useEffect(() => {
     if (!searchQuery || searchQuery.length < 2) {
@@ -70,15 +76,17 @@ export default function Home() {
       return;
     }
     const timer = setTimeout(async () => {
-      const res = await getSearchSuggestions(searchQuery, location);
+      const res = await getSearchSuggestions(searchQuery, location, lat, lng);
       setLiveSuggestions(res);
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery, location]);
+  }, [searchQuery, location, lat, lng]);
 
   const handleSearchSubmit = () => {
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}&loc=${encodeURIComponent(location && location !== 'Set your location' ? location : '')}`);
+      let url = `/search?q=${encodeURIComponent(searchQuery)}&loc=${encodeURIComponent(location && location !== 'Set your location' ? location : '')}`;
+      if (lat && lng) url += `&lat=${lat}&lng=${lng}`;
+      router.push(url);
     }
   };
 
@@ -274,7 +282,10 @@ export default function Home() {
                                   </div>
                                   <div>
                                     <p className="font-bold text-slate-900 text-sm md:text-[15px] line-clamp-1">{item.name}</p>
-                                    <span className="text-[10px] font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase line-clamp-1">{item.primary_category || item.address_text || 'Business'}</span>
+                                    <span className="text-[10px] font-bold text-[#111844] bg-blue-50 px-2 py-0.5 rounded uppercase line-clamp-1">
+                                      {item.primary_category || item.address_text || 'Business'}
+                                      {item.distance !== undefined && item.distance !== 999 && ` • ${item.distance.toFixed(1)} km`}
+                                    </span>
                                   </div>
                                 </div>
                                 <ArrowUpRight className="w-4 h-4 text-slate-300 flex-shrink-0 ml-2" />
