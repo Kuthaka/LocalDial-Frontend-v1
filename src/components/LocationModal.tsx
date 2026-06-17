@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Search, MapPin, Navigation, Loader2, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { setLocation as setReduxLocation } from "@/store/locationSlice";
@@ -21,14 +22,12 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
   // Lock background scroll when modal is open
   useEffect(() => {
     if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
     }
-    
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [isOpen]);
 
   // Sync search input with global location when modal opens
@@ -105,7 +104,10 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
     finalizeLocation(locName, lat, lng);
   };
 
-  return (
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -216,4 +218,7 @@ export default function LocationModal({ isOpen, onClose }: { isOpen: boolean, on
       )}
     </AnimatePresence>
   );
+
+  if (!mounted) return null;
+  return createPortal(modalContent, document.body);
 }

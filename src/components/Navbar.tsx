@@ -52,9 +52,10 @@ export default function Navbar() {
   }, [searchQuery, location, lat, lng]);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
-      bgScrolled ? "bg-[#C1EBE9]/95 backdrop-blur-md border-b border-[#a8d9d7] shadow-lg" : "bg-[#C1EBE9] md:bg-transparent"
-    }`}>
+    <>
+      <nav className={`fixed top-0 left-0 w-full z-[60] transition-colors duration-300 ${
+        bgScrolled ? "bg-[#C1EBE9]/95 backdrop-blur-md border-b border-[#a8d9d7] shadow-lg" : "bg-[#C1EBE9] md:bg-transparent"
+      }`}>
       {/* 1. Top Bar (Thin) - Both Desktop & Mobile */}
       <div className="bg-black border-b border-white/10 text-white text-[10px] md:text-xs">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-1.5 flex justify-between items-center">
@@ -246,8 +247,8 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <LocationModal isOpen={isLocationModalOpen} onClose={() => setIsLocationModalOpen(false)} />
     </nav>
+    <LocationModal isOpen={isLocationModalOpen} onClose={() => setIsLocationModalOpen(false)} />
+    </>
   );
 }
