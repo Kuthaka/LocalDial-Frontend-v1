@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface LocationState {
   currentLocation: string;
+  isLocating: boolean;
 }
 
 const initialState: LocationState = {
   currentLocation: '',
+  isLocating: true,
 };
 
 const locationSlice = createSlice({
@@ -18,8 +20,11 @@ const locationSlice = createSlice({
         localStorage.setItem('userLocation', action.payload);
       }
     },
+    setIsLocating: (state, action: PayloadAction<boolean>) => {
+      state.isLocating = action.payload;
+    }
   },
 });
 
-export const { setLocation } = locationSlice.actions;
+export const { setLocation, setIsLocating } = locationSlice.actions;
 export default locationSlice.reducer;

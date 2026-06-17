@@ -25,16 +25,17 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const location = useSelector((state: RootState) => state.location.currentLocation);
+  const isLocating = useSelector((state: RootState) => state.location.isLocating);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [liveSuggestions, setLiveSuggestions] = useState<any[]>([]);
   const [homeRestaurants, setHomeRestaurants] = useState<any[]>([]);
   const [homeBanks, setHomeBanks] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!location || location === 'Set your location') {
+    if (!isLocating && (!location || location === 'Set your location')) {
       setIsLocationModalOpen(true);
     }
-  }, [location]);
+  }, [location, isLocating]);
 
   useEffect(() => {
     async function loadHomeData() {
